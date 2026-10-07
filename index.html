@@ -139,6 +139,13 @@
     border-right: 1px solid var(--border);
   }
   .pizarra-item:last-child { border-right: none; }
+  @media (max-width: 720px) {
+    .pizarra { display: grid; grid-template-columns: 1fr 1fr; overflow-x: visible; }
+    .pizarra-item { flex: none; min-width: 0; border-bottom: 1px solid var(--border); }
+    .pizarra-item:nth-child(2n) { border-right: none; }
+    .pizarra-item:nth-last-child(-n+2) { border-bottom: none; }
+    .pizarra-item:last-child:nth-child(odd) { grid-column: 1 / -1; border-right: none; }
+  }
   .pizarra-name {
     font-size: 0.72rem;
     letter-spacing: 0.03em;
