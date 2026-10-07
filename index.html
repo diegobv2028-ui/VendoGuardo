@@ -416,6 +416,19 @@
     line-height: 1.55;
     margin: 0 0 14px;
   }
+  .fb-form { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 4px; padding: 18px; max-width: 560px; }
+  .fb-form fieldset { border: none; padding: 0; margin: 0 0 4px; }
+  .fb-form legend { font-size: 0.82rem; font-weight: 500; margin-bottom: 8px; padding: 0; }
+  .fb-opts { display: flex; flex-wrap: wrap; gap: 8px; }
+  .fb-opts label { margin: 0; display: inline-flex; align-items: center; gap: 6px; border: 1px solid var(--border); border-radius: 3px; padding: 8px 12px; background: var(--bg); cursor: pointer; font-weight: 400; font-size: 0.9rem; }
+  .fb-opts input { accent-color: var(--green); margin: 0; }
+  .fb-form textarea, .fb-form input[type="text"] { width: 100%; box-sizing: border-box; font-family: var(--font-body); font-size: 0.95rem; padding: 10px 12px; border: 1px solid var(--border); border-radius: 3px; background: var(--bg); color: var(--ink); }
+  .fb-form textarea { min-height: 90px; resize: vertical; }
+  .fb-form textarea:focus, .fb-form input[type="text"]:focus { outline: 2px solid var(--gold); outline-offset: 1px; }
+  .fb-hidden { position: absolute; left: -9999px; }
+  .fb-status { font-size: 0.88rem; margin: 12px 0 0; min-height: 1em; }
+  .fb-status.ok { color: var(--up); font-weight: 500; }
+  .fb-status.err { color: var(--down); }
   button.comment-btn {
     background: var(--gold);
     color: var(--bg-panel);
@@ -545,8 +558,28 @@
   </div>
 
   <div class="sugerencias" id="sugerenciasSeccion">
-    <h2>¿Qué dato te gustaría encontrar acá?</h2>
-    <p>Esta app se va completando con lo que piden los productores que la usan. Si te falta un cultivo, un mercado, un dato de tu zona o cualquier otra cosa, dejalo en los comentarios de mis videos de TikTok.</p>
+    <h2>¿Te sirvió? Contanos</h2>
+    <p>Esta app se va completando con lo que piden los productores que la usan. Si te falta un cultivo, un mercado, un dato de tu zona o algo no se entiende, escribilo acá: lo leo yo.</p>
+    <form class="fb-form" id="fbForm" name="comentarios" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+      <input type="hidden" name="form-name" value="comentarios">
+      <input type="hidden" name="cultivo" id="fbCultivo">
+      <input type="hidden" name="recomendacion" id="fbRecomendacion">
+      <p class="fb-hidden"><label>No completar: <input name="bot-field"></label></p>
+      <fieldset>
+        <legend>¿Te sirvió la recomendación?</legend>
+        <div class="fb-opts">
+          <label><input type="radio" name="utilidad" value="Sí"> Sí</label>
+          <label><input type="radio" name="utilidad" value="Más o menos"> Más o menos</label>
+          <label><input type="radio" name="utilidad" value="No"> No</label>
+        </div>
+      </fieldset>
+      <label for="fbComentario">Comentario o pedido</label>
+      <textarea id="fbComentario" name="comentario" placeholder="Ej: me gustaría ver el precio de Quequén, o agregar sorgo"></textarea>
+      <label for="fbContacto">Tu WhatsApp o mail (opcional, si querés que te responda)</label>
+      <input type="text" id="fbContacto" name="contacto" autocomplete="off">
+      <button type="submit" class="submit" id="fbBtn">Enviar comentario</button>
+      <p class="fb-status" id="fbStatus" role="status"></p>
+    </form>
   </div>
 
   <footer class="foot">
@@ -1094,6 +1127,71 @@ document.getElementById("calcBtn").addEventListener("click", () => {
 
   document.getElementById("resultEmpty").style.display = "none";
   document.getElementById("resultCard").classList.add("show");
+});
+
+
+// ===== Estadísticas de uso (GoatCounter) y comentarios =====
+// Para activar las estadísticas, poné acá el código de tu cuenta de GoatCounter
+// (lo que va antes de .goatcounter.com, ej: "vendoguardo"). Vacío = desactivado.
+const GOATCOUNTER_CODIGO = "";
+
+function registrarEvento(nombre, titulo) {
+  try {
+    if (window.goatcounter && window.goatcounter.count) {
+      window.goatcounter.count({ path: nombre, title: titulo || nombre, event: true });
+    }
+  } catch (e) {}
+}
+if (GOATCOUNTER_CODIGO) {
+  const gc = document.createElement("script");
+  gc.async = true;
+  gc.src = "https://gc.zgo.at/count.js";
+  gc.setAttribute("data-goatcounter", "https://" + GOATCOUNTER_CODIGO + ".goatcounter.com/count");
+  document.head.appendChild(gc);
+}
+
+let ultimaRecomendacion = "";
+document.getElementById("calcBtn").addEventListener("click", () => {
+  setTimeout(() => {
+    if (!document.getElementById("resultCard").classList.contains("show")) return;
+    const cultivo = cultivoSelect.value;
+    const veredicto = document.getElementById("verdictLabel").textContent;
+    ultimaRecomendacion = veredicto;
+    registrarEvento("recomendacion-" + cultivo, "Recomendación " + cultivo + ": " + veredicto);
+  }, 0);
+});
+
+document.getElementById("fbForm").addEventListener("submit", (ev) => {
+  ev.preventDefault();
+  const form = ev.target;
+  const status = document.getElementById("fbStatus");
+  const btn = document.getElementById("fbBtn");
+  const comentario = document.getElementById("fbComentario").value.trim();
+  const utilidad = form.querySelector('input[name="utilidad"]:checked');
+  if (!comentario && !utilidad) {
+    status.className = "fb-status err";
+    status.textContent = "Elegí una opción o escribí un comentario antes de enviar.";
+    return;
+  }
+  document.getElementById("fbCultivo").value = cultivoSelect.value || "";
+  document.getElementById("fbRecomendacion").value = ultimaRecomendacion;
+  btn.disabled = true;
+  status.className = "fb-status";
+  status.textContent = "Enviando…";
+  fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(new FormData(form)).toString()
+  }).then(r => {
+    if (!r.ok) throw new Error(r.status);
+    form.reset();
+    status.className = "fb-status ok";
+    status.textContent = "¡Gracias! Tu comentario me llegó.";
+    registrarEvento("comentario-enviado", "Comentario enviado");
+  }).catch(() => {
+    status.className = "fb-status err";
+    status.textContent = "No se pudo enviar. Probá de nuevo en un rato o dejalo en los comentarios de TikTok.";
+  }).finally(() => { btn.disabled = false; });
 });
 
 // si hay datos guardados, mostrar el resultado de una
