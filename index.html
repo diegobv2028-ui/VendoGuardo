@@ -608,9 +608,9 @@
    Girasol: pizarra ESTIMATIVA (E) y sin futuro en US$ público: sin
    recomendación firme. Forward: se negocia caso a caso, sin cotización.
    ===================================================================== */
-const ACTUALIZADO = "7 de octubre de 2026 — contado: pizarra CAC-BCR del 5-oct (sin pizarra nueva publicada); futuros: A3, cierre del 5-oct.";
-const FECHA_DATOS = "2026-10-05";   // fecha de la pizarra (mes de referencia del calendario)
-const FUENTE_FUTUROS = "A3, cierre 5-oct-2026";
+const ACTUALIZADO = "8 de octubre de 2026 — contado: pizarra CAC-BCR del 7-oct; futuros: A3, ajuste del cierre del 7-oct (fuente AFA; Bolsa de Cereales sin acceso para contrastar).";
+const FECHA_DATOS = "2026-10-07";   // fecha de la pizarra (mes de referencia del calendario)
+const FUENTE_FUTUROS = "A3, cierre 7-oct-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
 const WASDE = "El informe WASDE de octubre (USDA) suele salir en la segunda semana del mes y puede mover el precio.";
@@ -619,12 +619,11 @@ const MERCADO = {
   soja: {
     nombre: "Soja",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 } ],
+    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-07", usd: 371.35 } ],
     anio_anterior_usd: null,
-    contado_fuente: "CAC-BCR, pizarra 5-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
     futuros: [
-      { posicion: "oct-26", usd: 367 }, { posicion: "nov-26", usd: 370.5 }, { posicion: "ene-27", usd: 375.5 },
-      { posicion: "may-27", usd: 356.8 }, { posicion: "jul-27", usd: 363.4 }, { posicion: "sep-27", usd: 367.5 },
+      { posicion: "oct-26", usd: 372 }, { posicion: "nov-26", usd: 374.2 }, { posicion: "ene-27", usd: 379.5 }, { posicion: "may-27", usd: 359.2 }, { posicion: "jul-27", usd: 366.3 }, { posicion: "sep-27", usd: 370.5 },
     ],
     ref_nueva: "may-27",
     evento_proximo: WASDE,
@@ -632,14 +631,11 @@ const MERCADO = {
   maiz: {
     nombre: "Maíz",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 } ],
+    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-07", usd: 195.49 } ],
     anio_anterior_usd: 177, // contado BCR, sep-2025
-    contado_fuente: "CAC-BCR, pizarra 5-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
     futuros: [
-      { posicion: "oct-26", usd: 195 }, { posicion: "nov-26", usd: 196 }, { posicion: "dic-26", usd: 204 },
-      { posicion: "ene-27", usd: 201.5 }, { posicion: "feb-27", usd: 203 }, { posicion: "mar-27", usd: 201.5 },
-      { posicion: "abr-27", usd: 201.9 }, { posicion: "jul-27", usd: 198.3 }, { posicion: "sep-27", usd: 202 },
-      { posicion: "dic-27", usd: 207.5 },
+      { posicion: "oct-26", usd: 197 }, { posicion: "nov-26", usd: 199 }, { posicion: "dic-26", usd: 204.8 }, { posicion: "ene-27", usd: 202 }, { posicion: "feb-27", usd: 203.5 }, { posicion: "mar-27", usd: 202.5 }, { posicion: "abr-27", usd: 203.1 }, { posicion: "jul-27", usd: 200.2 }, { posicion: "sep-27", usd: 204.1 }, { posicion: "dic-27", usd: 209.5 },
     ],
     ref_nueva: "abr-27",
     evento_proximo: WASDE,
@@ -647,12 +643,11 @@ const MERCADO = {
   trigo: {
     nombre: "Trigo",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 } ],
+    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-07", usd: 226.99 } ],
     anio_anterior_usd: 189, // contado BCR, sep-2025
-    contado_fuente: "CAC-BCR, pizarra 5-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
     futuros: [
-      { posicion: "nov-26", usd: 226.4 }, { posicion: "dic-26", usd: 226.6 }, { posicion: "ene-27", usd: 231.1 },
-      { posicion: "mar-27", usd: 238 },
+      { posicion: "nov-26", usd: 224.5 }, { posicion: "dic-26", usd: 226.5 }, { posicion: "ene-27", usd: 231.6 }, { posicion: "mar-27", usd: 238 },
     ],
     ref_nueva: "ene-27",
     evento_proximo: "",
@@ -660,9 +655,9 @@ const MERCADO = {
   girasol: {
     nombre: "Girasol",
     estimativo: true,
-    historico: [ { f: "2026-10-05", usd: 505 } ],
+    historico: [ { f: "2026-10-05", usd: 505 }, { f: "2026-10-07", usd: 505 } ],
     anio_anterior_usd: null,
-    contado_fuente: "CAC-BCR, pizarra 5-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
     futuros: [],
     ref_nueva: null,
     evento_proximo: "",
