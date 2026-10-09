@@ -171,6 +171,12 @@
   }
   .pizarra-year.up { color: var(--up); }
   .pizarra-year.down { color: var(--down); }
+  .pizarra-fecha {
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
 
   /* ---------- layout: form + resultado ---------- */
   .panels {
@@ -583,7 +589,7 @@
   </div>
 
   <footer class="foot">
-    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de Rosario de la misma fecha del año anterior (o el día hábil normal más cercano), pasada a dólares con el dólar oficial de referencia (BCRA A3500) de ese día. La referencia de precio es la pizarra anterior confirmada (21-sep) y se va completando con cada actualización. El girasol cotiza con valor estimativo y el forward se negocia caso a caso, por eso no tienen recomendación automática. Confirmá siempre con tu corredor antes de operar.
+    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de Rosario de la misma fecha del año anterior (o el día hábil normal más cercano), pasada a dólares con el dólar oficial de referencia (BCRA A3500) de ese día. La variación diaria compara contra la pizarra anterior cargada; la recomendación usa como referencia el promedio de las pizarras de los últimos 30 días. El girasol cotiza con valor estimativo y el forward se negocia caso a caso, por eso no tienen recomendación automática. Confirmá siempre con tu corredor antes de operar.
   </footer>
 </div>
 
@@ -712,6 +718,8 @@ const CALENDARIO = {
 const fmt = (n, d = 2) => Number(n).toLocaleString("es-AR", { minimumFractionDigits: 0, maximumFractionDigits: d });
 const MESES = ["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const fmtFecha = iso => { const p = iso.split("-"); return `${parseInt(p[2], 10)}-${MESES[parseInt(p[1], 10) - 1]}`; };
+const MESES_LARGOS = ["enero","febrero","marzo","abril","mayo","junio","julio","agosto","septiembre","octubre","noviembre","diciembre"];
+const fmtFechaLarga = iso => { const p = iso.split("-"); return `${parseInt(p[2], 10)} de ${MESES_LARGOS[parseInt(p[1], 10) - 1]}`; };
 const dias = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
 const pct = (a, b) => ((a - b) / b) * 100;
 const fmtPct = p => `${p > 0 ? "+" : ""}${fmt(p, Math.abs(p) < 0.1 ? 2 : 1)}%`;
@@ -785,16 +793,18 @@ const pizarraEl = document.getElementById("pizarra");
 Object.keys(MERCADO).forEach(key => {
   const c = MERCADO[key];
 
-  let deltaHtml = `<div class="pizarra-delta">sin comparación previa</div>`;
-  if (c.ref && !c.estimativo) {
-    const d = pct(c.precio_hoy_usd, c.ref.usd);
-    deltaHtml = `<div class="pizarra-delta ${d > 0 ? "up" : (d < 0 ? "down" : "")}">${fmtPct(d)} vs. pizarra del ${fmtFecha(c.ref.desde)}</div>`;
+  // variación contra la pizarra anterior cargada (con su fecha real)
+  const prev = c.historico.length > 1 ? c.historico[c.historico.length - 2] : null;
+  let deltaHtml = `<div class="pizarra-delta">${c.estimativo ? "valor estimativo, sin variación firme" : "sin pizarra anterior para comparar"}</div>`;
+  if (prev && !c.estimativo) {
+    const d = pct(c.precio_hoy_usd, prev.usd);
+    deltaHtml = `<div class="pizarra-delta ${d > 0 ? "up" : (d < 0 ? "down" : "")}">${fmtPct(d)} vs. ${fmtFecha(prev.f)}</div>`;
   }
 
   let anioHtml = `<div class="pizarra-year">vs. hace un año: sin dato confirmado</div>`;
   if (c.anio_anterior_usd) {
     const yoyPct = pct(c.precio_hoy_usd, c.anio_anterior_usd); // contado contra contado
-    anioHtml = `<div class="pizarra-year ${yoyPct > 0 ? "up" : (yoyPct < 0 ? "down" : "")}">${fmtPct(yoyPct)} vs. contado ${c.anio_anterior_fecha ? "del " + c.anio_anterior_fecha.split("-").reverse().join("/") : "de hace un año"}</div>`;
+    anioHtml = `<div class="pizarra-year ${yoyPct > 0 ? "up" : (yoyPct < 0 ? "down" : "")}">${fmtPct(yoyPct)} vs. hace un año${c.anio_anterior_fecha ? " (" + fmtFecha(c.anio_anterior_fecha) + "-" + c.anio_anterior_fecha.slice(2, 4) + ")" : ""}</div>`;
     if (c.anio_anterior_nota) anioHtml += `<div class="pizarra-year-nota" style="font-size:.8em;opacity:.75;margin-top:2px">${c.anio_anterior_nota}</div>`;
   }
 
@@ -803,9 +813,9 @@ Object.keys(MERCADO).forEach(key => {
   item.innerHTML = `
     <div class="pizarra-name">${c.nombre.toUpperCase()}</div>
     <div class="pizarra-price">US$ ${fmt(c.precio_hoy_usd)}${c.estimativo ? " (E)" : ""}</div>
+    <div class="pizarra-fecha">Pizarra del ${fmtFechaLarga(c.fecha_hoy)}${c.estimativo ? " · estimativo" : ""}</div>
     ${deltaHtml}
     ${anioHtml}
-    <div class="pizarra-year">${c.estimativo ? "estimativo, sin cotización firme" : "pizarra Rosario, " + fmtFecha(c.fecha_hoy)}</div>
   `;
   pizarraEl.appendChild(item);
 });
