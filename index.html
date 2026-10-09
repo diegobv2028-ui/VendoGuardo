@@ -607,7 +607,7 @@
    Girasol: pizarra ESTIMATIVA (E) y sin futuro en US$ público: sin
    recomendación firme. Forward: se negocia caso a caso, sin cotización.
    ===================================================================== */
-const ACTUALIZADO = "9 de octubre de 2026 — contado: pizarra CAC-BCR del 8-oct; futuros: A3, ajuste del cierre del 8-oct; comparación con hace un año sin dato nuevo.";
+const ACTUALIZADO = "9 de octubre de 2026 — contado: pizarra CAC-BCR del 8-oct; futuros: A3, ajuste del cierre del 8-oct; comparación con hace un año: contado del 8-oct-2025.";
 const FECHA_DATOS = "2026-10-08";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 8-oct-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
@@ -619,8 +619,8 @@ const MERCADO = {
     nombre: "Soja",
     estimativo: false,
     historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-07", usd: 371.35 }, { f: "2026-10-08", usd: 371.72 } ],
-    anio_anterior_usd: null,
-    anio_anterior_fecha: null,
+    anio_anterior_usd: 346.07,
+    anio_anterior_fecha: "2025-10-08",
     anio_anterior_nota: "",
     contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
@@ -633,8 +633,8 @@ const MERCADO = {
     nombre: "Maíz",
     estimativo: false,
     historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-07", usd: 195.49 }, { f: "2026-10-08", usd: 194.82 } ],
-    anio_anterior_usd: 177, // contado BCR, sep-2025
-    anio_anterior_fecha: null,
+    anio_anterior_usd: 175.56,
+    anio_anterior_fecha: "2025-10-08",
     anio_anterior_nota: "",
     contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
@@ -647,8 +647,8 @@ const MERCADO = {
     nombre: "Trigo",
     estimativo: false,
     historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-07", usd: 226.99 }, { f: "2026-10-08", usd: 227.48 } ],
-    anio_anterior_usd: 189, // contado BCR, sep-2025
-    anio_anterior_fecha: null,
+    anio_anterior_usd: 183.87,
+    anio_anterior_fecha: "2025-10-08",
     anio_anterior_nota: "",
     contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
