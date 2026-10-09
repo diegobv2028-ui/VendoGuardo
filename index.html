@@ -583,7 +583,7 @@
   </div>
 
   <footer class="foot">
-    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de la misma fecha del año anterior (o el día hábil normal más cercano). La soja de 2025 se publicaba solo en pesos y se pasa a dólares con el tipo de cambio que usó la Cámara ese día. La referencia de precio es la pizarra anterior confirmada (21-sep) y se va completando con cada actualización. El girasol cotiza con valor estimativo y el forward se negocia caso a caso, por eso no tienen recomendación automática. Confirmá siempre con tu corredor antes de operar.
+    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de Rosario de la misma fecha del año anterior (o el día hábil normal más cercano), pasada a dólares con el dólar oficial de referencia (BCRA A3500) de ese día. La referencia de precio es la pizarra anterior confirmada (21-sep) y se va completando con cada actualización. El girasol cotiza con valor estimativo y el forward se negocia caso a caso, por eso no tienen recomendación automática. Confirmá siempre con tu corredor antes de operar.
   </footer>
 </div>
 
@@ -607,8 +607,8 @@
    Girasol: pizarra ESTIMATIVA (E) y sin futuro en US$ público: sin
    recomendación firme. Forward: se negocia caso a caso, sin cotización.
    ===================================================================== */
-const ACTUALIZADO = "9 de octubre de 2026 — contado: pizarra CAC-BCR del 7-oct (sin pizarra nueva); futuros: A3, ajuste del cierre del 8-oct; comparación con hace un año sin dato nuevo.";
-const FECHA_DATOS = "2026-10-07";   // fecha de la pizarra (mes de referencia del calendario)
+const ACTUALIZADO = "9 de octubre de 2026 — contado: pizarra CAC-BCR del 8-oct; futuros: A3, ajuste del cierre del 8-oct; comparación con hace un año sin dato nuevo.";
+const FECHA_DATOS = "2026-10-08";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 8-oct-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
@@ -618,11 +618,11 @@ const MERCADO = {
   soja: {
     nombre: "Soja",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-07", usd: 371.35 } ],
+    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-07", usd: 371.35 }, { f: "2026-10-08", usd: 371.72 } ],
     anio_anterior_usd: null,
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
       { posicion: "oct-26", usd: 371 }, { posicion: "nov-26", usd: 373.5 }, { posicion: "ene-27", usd: 378.2 }, { posicion: "may-27", usd: 358.8 }, { posicion: "jul-27", usd: 366.2 }, { posicion: "sep-27", usd: 370.5 },
     ],
@@ -632,11 +632,11 @@ const MERCADO = {
   maiz: {
     nombre: "Maíz",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-07", usd: 195.49 } ],
+    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-07", usd: 195.49 }, { f: "2026-10-08", usd: 194.82 } ],
     anio_anterior_usd: 177, // contado BCR, sep-2025
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
       { posicion: "oct-26", usd: 196 }, { posicion: "nov-26", usd: 199 }, { posicion: "dic-26", usd: 203 }, { posicion: "ene-27", usd: 202 },
     ],
@@ -646,11 +646,11 @@ const MERCADO = {
   trigo: {
     nombre: "Trigo",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-07", usd: 226.99 } ],
+    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-07", usd: 226.99 }, { f: "2026-10-08", usd: 227.48 } ],
     anio_anterior_usd: 189, // contado BCR, sep-2025
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [
       { posicion: "nov-26", usd: 225 }, { posicion: "dic-26", usd: 227 }, { posicion: "ene-27", usd: 232 }, { posicion: "mar-27", usd: 238.2 },
     ],
@@ -660,11 +660,11 @@ const MERCADO = {
   girasol: {
     nombre: "Girasol",
     estimativo: true,
-    historico: [ { f: "2026-10-05", usd: 505 }, { f: "2026-10-07", usd: 505 } ],
+    historico: [ { f: "2026-10-05", usd: 505 }, { f: "2026-10-07", usd: 505 }, { f: "2026-10-08", usd: 530 } ],
     anio_anterior_usd: null,
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 7-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 8-oct-2026",
     futuros: [],
     ref_nueva: null,
     evento_proximo: "",
