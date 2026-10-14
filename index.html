@@ -467,6 +467,28 @@
     color: var(--ink-soft);
     line-height: 1.6;
   }
+
+  /* ---------- otros puertos ---------- */
+  .puertos { margin: -14px 0 30px; border: 1px solid var(--border); background: var(--bg-panel); border-radius: 4px; padding: 12px 14px; }
+  .puertos-t { font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); margin: 0 0 8px; letter-spacing: 0.02em; }
+  .puertos table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  .puertos th, .puertos td { text-align: right; padding: 5px 4px; border-bottom: 1px solid var(--border); }
+  .puertos th:first-child, .puertos td:first-child { text-align: left; }
+  .puertos th { font-weight: 500; color: var(--ink-soft); font-size: 0.74rem; }
+  .puertos tr:last-child td { border-bottom: none; }
+  .puertos .sc { color: var(--ink-soft); font-style: italic; font-size: 0.8rem; }
+  .puertos-f { font-size: 0.72rem; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.45; }
+
+  /* ---------- precio neto en tu campo ---------- */
+  details.neto-form { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; }
+  details.neto-form summary { font-size: 0.88rem; font-weight: 600; cursor: pointer; color: var(--green); }
+  details.neto-form .neto-intro { font-size: 0.8rem; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.45; }
+  .neto-box { border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; margin: 0 0 16px; background: var(--bg-panel); }
+  .neto-t { font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); margin: 0 0 4px; }
+  .neto-v { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; margin: 0 0 8px; }
+  .neto-v small { font-family: var(--font-body); font-size: 0.8rem; font-weight: 500; color: var(--ink-soft); }
+  .neto-l { font-size: 0.84rem; line-height: 1.6; margin: 0; color: var(--ink-soft); }
+  .neto-n { font-size: 0.76rem; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.45; }
 </style>
 </head>
 <body>
@@ -482,6 +504,7 @@
 
   <div class="pizarra" id="pizarra"></div>
   <p class="pizarra-nota" id="pizarraNota"></p>
+  <div class="puertos" id="otrosPuertos"></div>
 
   <div class="panels">
     <section class="panel">
@@ -516,6 +539,26 @@
       <input type="number" id="objetivo" min="0" step="1" placeholder="Ej: 320">
       <div class="field-hint">Si tenés un número en la cabeza, te avisamos cuando el mercado lo toque.</div>
 
+            <details class="neto-form" id="netoForm">
+        <summary>Ver cuánto te queda en tu campo (opcional)</summary>
+        <p class="neto-intro">Restamos el flete y los gastos al precio de pizarra del puerto donde entregás.</p>
+
+        <label for="puerto">¿A qué puerto entregás?</label>
+        <select id="puerto">
+          <option value="rosario">Rosario (Up River)</option>
+          <option value="bahia">Bahía Blanca</option>
+          <option value="quequen">Quequén (Necochea)</option>
+        </select>
+
+        <label for="flete">Flete hasta el puerto, en $ por tonelada</label>
+        <input type="number" id="flete" min="0" step="100" inputmode="numeric" placeholder="Ej: 45000">
+        <div class="field-hint">Cargá lo que te cobran de verdad. Las tarifas de referencia (CATAC, Fetra) suelen quedar por encima de lo que se paga en el mercado.</div>
+
+        <label for="gastos">Otros gastos de venta, en % (opcional)</label>
+        <input type="number" id="gastos" min="0" max="30" step="0.1" inputmode="decimal" placeholder="Ej: 2">
+        <div class="field-hint">Comisión, paritarias, sellado, secada… Si no sabés, dejalo vacío.</div>
+      </details>
+
       <button class="submit" id="calcBtn">Ver mi recomendación</button>
       <div class="saved-note" id="savedNote" style="display:none;">
         Usando tus datos guardados. <button id="clearBtn">Borrar y cargar de nuevo</button>
@@ -533,6 +576,7 @@
           <p class="verdict-label" id="verdictLabel"></p>
           <p class="verdict-sub" id="verdictSub"></p>
         </div>
+        <div class="neto-box" id="netoBox" hidden></div>
         <p class="why-title">Por qué</p>
         <ul class="reasons" id="reasons"></ul>
 
@@ -684,6 +728,20 @@ const MERCADO = {
     evento_proximo: "",
   },
 };
+
+/* Otros puertos: pizarra de Bahía Blanca y Quequén en US$/t (null = sin cotización),
+   según la Bolsa de Cereales y Productos de Bahía Blanca. Puede tener otra fecha que Rosario. */
+const OTROS_PUERTOS = {
+  fecha: "2026-10-08",
+  fuente: "Bolsa de Cereales y Productos de Bahía Blanca, pizarra 8-oct-2026",
+  precios: {
+    soja:    { bahia: 360,  quequen: null },
+    maiz:    { bahia: null, quequen: null },
+    trigo:   { bahia: 235,  quequen: null },
+    girasol: { bahia: 450,  quequen: 450 },
+  },
+};
+const TC_BNA = 1508.00;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
 
 /* Calendario agrícola: rangos generales de Argentina. ini/fin = meses (1-12) en que
    se cosecha. Varían según zona y fecha de siembra: por eso el productor elige. */
@@ -1234,6 +1292,72 @@ document.getElementById("fbForm").addEventListener("submit", (ev) => {
     status.textContent = "No se pudo enviar. Probá de nuevo en un rato o dejalo en los comentarios de TikTok.";
   }).finally(() => { btn.disabled = false; });
 });
+
+// ===== Otros puertos y precio neto en tu campo =====
+const NOMBRE_PUERTO = { rosario: "Rosario", bahia: "Bahía Blanca", quequen: "Quequén" };
+
+(function mostrarOtrosPuertos() {
+  const el = document.getElementById("otrosPuertos");
+  if (!el || typeof OTROS_PUERTOS === "undefined") return;
+  const celda = v => (v == null ? '<td class="sc">s/c</td>' : `<td>US$ ${fmt(v, 0)}</td>`);
+  const filas = Object.keys(MERCADO).map(k => {
+    const c = MERCADO[k], o = OTROS_PUERTOS.precios[k] || {};
+    return `<tr><td>${c.nombre}</td><td>US$ ${fmt(c.precio_hoy_usd, 0)}${c.estimativo ? " (E)" : ""}</td>${celda(o.bahia)}${celda(o.quequen)}</tr>`;
+  }).join("");
+  el.innerHTML = `<p class="puertos-t">PIZARRA POR PUERTO · US$/t</p>
+    <table><tr><th>Grano</th><th>Rosario<br>${fmtFecha(FECHA_DATOS)}</th><th>Bahía Blanca<br>${fmtFecha(OTROS_PUERTOS.fecha)}</th><th>Quequén<br>${fmtFecha(OTROS_PUERTOS.fecha)}</th></tr>${filas}</table>
+    <p class="puertos-f">s/c = sin cotización ese día. Bahía Blanca y Quequén: ${OTROS_PUERTOS.fuente}.</p>`;
+})();
+
+const NETO_KEY = "vendo-o-guardo:neto";
+try {
+  const n = JSON.parse(localStorage.getItem(NETO_KEY) || "null");
+  if (n) {
+    if (n.puerto) document.getElementById("puerto").value = n.puerto;
+    if (n.flete != null) document.getElementById("flete").value = n.flete;
+    if (n.gastos != null) document.getElementById("gastos").value = n.gastos;
+    if (n.flete) document.getElementById("netoForm").open = true;
+  }
+} catch (e) {}
+
+function precioPuerto(key, puerto) {
+  const c = MERCADO[key];
+  if (puerto === "rosario") return { usd: c.precio_hoy_usd, fecha: c.fecha_hoy, estimativo: c.estimativo };
+  const v = (OTROS_PUERTOS.precios[key] || {})[puerto];
+  return v == null ? null : { usd: v, fecha: OTROS_PUERTOS.fecha, estimativo: false };
+}
+
+function mostrarNeto() {
+  const box = document.getElementById("netoBox");
+  box.hidden = true;
+  if (!document.getElementById("resultCard").classList.contains("show")) return;
+  const key = cultivoSelect.value;
+  const puerto = document.getElementById("puerto").value;
+  const flete = parseFloat(document.getElementById("flete").value) || 0;
+  const gastos = parseFloat(document.getElementById("gastos").value) || 0;
+  try { localStorage.setItem(NETO_KEY, JSON.stringify({ puerto, flete: flete || null, gastos: gastos || null })); } catch (e) {}
+  if (!flete && !gastos) return;
+
+  const nombre = MERCADO[key].nombre;
+  const base = precioPuerto(key, puerto);
+  if (!base) {
+    box.innerHTML = `<p class="neto-t">Lo que te queda en tu campo</p><p class="neto-l">Hoy no hay pizarra de ${nombre.toLowerCase()} en ${NOMBRE_PUERTO[puerto]} (sin cotización). Probá con otro puerto o pedile precio a tu comprador.</p>`;
+    box.hidden = false;
+    return;
+  }
+  const fleteUsd = flete / TC_BNA;
+  const gastosUsd = base.usd * gastos / 100;
+  const neto = base.usd - fleteUsd - gastosUsd;
+  const lineas = [`Pizarra ${NOMBRE_PUERTO[puerto]} (${fmtFecha(base.fecha)}): US$ ${fmt(base.usd)}/t${base.estimativo ? " (E)" : ""}`];
+  if (flete) lineas.push(`− Flete: US$ ${fmt(fleteUsd)}/t ($ ${fmt(flete, 0)} al dólar BNA de $ ${fmt(TC_BNA)})`);
+  if (gastos) lineas.push(`− Gastos (${fmt(gastos, 1)}%): US$ ${fmt(gastosUsd)}/t`);
+  box.innerHTML = `<p class="neto-t">Lo que te queda en tu campo · ${nombre}, contado</p>
+    <p class="neto-v">≈ US$ ${fmt(neto)}/t <small>≈ $ ${fmt(neto * TC_BNA, 0)}/t</small></p>
+    <p class="neto-l">${lineas.join("<br>")}</p>
+    <p class="neto-n">Es una cuenta orientativa con los números que cargaste. El precio final lo confirma tu comprador.</p>`;
+  box.hidden = false;
+}
+document.getElementById("calcBtn").addEventListener("click", mostrarNeto);
 
 // si hay datos guardados, mostrar el resultado de una
 if (guardado && guardado.disponible) {
