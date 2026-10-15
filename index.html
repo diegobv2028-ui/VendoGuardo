@@ -783,10 +783,12 @@ const CALENDARIO = {
     defecto: "abr-may",
   },
   maiz: {
-    texto: "El maíz temprano se siembra en septiembre–octubre y el tardío en noviembre–diciembre; en general se cosecha de marzo a mayo.",
+    texto: "El maíz temprano se siembra en septiembre–octubre y se cosecha de marzo a mayo; el tardío se siembra en noviembre–diciembre y se cosecha de junio a agosto.",
     ventanas: [
       { id: "mar-abr", nombre: "Marzo–abril", ini: 3, fin: 4 },
       { id: "abr-may", nombre: "Abril–mayo", ini: 4, fin: 5 },
+      { id: "jun-jul", nombre: "Junio–julio (maíz tardío)", ini: 6, fin: 7 },
+      { id: "jul-ago", nombre: "Julio–agosto (maíz tardío)", ini: 7, fin: 8 },
     ],
     defecto: "mar-abr",
   },
@@ -875,7 +877,7 @@ function armarContexto() {
     const f = c.futuros.find(x => x.posicion === c.ref_nueva);
     return f ? `${c.nombre.toLowerCase()} ${f.posicion} US$ ${fmt(f.usd)}/t (${fmtPct(pct(f.usd, c.precio_hoy_usd))} vs. el contado de hoy)` : null;
   }).filter(Boolean);
-  if (fut.length) txt += ` En A3, los vencimientos que cubren la cosecha de esta campaña cotizan así: ${fut.join("; ")}. La soja y el maíz se cosechan desde marzo; el trigo, entre noviembre y enero.`;
+  if (fut.length) txt += ` En A3, los vencimientos que cubren la cosecha de esta campaña cotizan así: ${fut.join("; ")}. La soja y el maíz temprano se cosechan desde marzo (el maíz tardío, de junio a agosto); el trigo, entre noviembre y enero.`;
   return txt;
 }
 
