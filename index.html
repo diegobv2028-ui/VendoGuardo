@@ -627,8 +627,7 @@
   <div class="sugerencias" id="sugerenciasSeccion">
     <h2>¿Te sirvió? Contanos</h2>
     <p>Esta app se va completando con lo que piden los productores que la usan. Si te falta un cultivo, un mercado, un dato de tu zona o algo no se entiende, escribilo acá: lo leo yo.</p>
-    <form class="fb-form" id="fbForm" name="comentarios" method="POST" data-netlify="true" netlify-honeypot="bot-field">
-      <input type="hidden" name="form-name" value="comentarios">
+    <form class="fb-form" id="fbForm" name="comentarios">
       <input type="hidden" name="cultivo" id="fbCultivo">
       <input type="hidden" name="recomendacion" id="fbRecomendacion">
       <p class="fb-hidden"><label>No completar: <input name="bot-field"></label></p>
@@ -1306,12 +1305,20 @@ document.getElementById("fbForm").addEventListener("submit", (ev) => {
   btn.disabled = true;
   status.className = "fb-status";
   status.textContent = "Enviando…";
-  fetch("/", {
+  if (form.elements["bot-field"].value) return;
+  const contacto = document.getElementById("fbContacto").value.trim();
+  const datos = new URLSearchParams();
+  datos.append("entry.174932864", utilidad ? utilidad.value : "");
+  datos.append("entry.985255268", comentario + (contacto ? "\nContacto: " + contacto : ""));
+  datos.append("entry.2012625518", document.getElementById("fbCultivo").value);
+  datos.append("entry.1447794741", document.getElementById("fbRecomendacion").value);
+  // Respuestas al formulario de Google "Comentarios Vendo o guardo" (solo las ve el dueño del formulario)
+  fetch("https://docs.google.com/forms/d/e/1FAIpQLScTOxwOxvuQtIMt_y14OS3b7EaQg2Zj3cLevZPdly0f8Rcmyg/formResponse", {
     method: "POST",
+    mode: "no-cors",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams(new FormData(form)).toString()
-  }).then(r => {
-    if (!r.ok) throw new Error(r.status);
+    body: datos.toString()
+  }).then(() => {
     form.reset();
     status.className = "fb-status ok";
     status.textContent = "¡Gracias! Tu comentario me llegó.";
