@@ -786,6 +786,7 @@ const MUNDO = {
     soja:  { dir: "bajista", porque: "China compra poco y Brasil siembra adelantado, así que su cosecha va a competir antes con la nuestra" },
     maiz:  { dir: "bajista", porque: "EE.UU. está levantando una cosecha grande, China volvió a abrirle la puerta a su maíz y en Argentina la siembra viene adelantada" },
     trigo: { dir: "bajista", porque: "el trigo argentino está en muy buena condición y se esperan rindes por encima del promedio" },
+    girasol: { dir: "alcista", porque: "el aceite de girasol sigue firme por los fletes altos y los problemas logísticos en el Mar Negro, y las exportaciones argentinas del complejo crecieron fuerte este año (ASAGIR, oct-2026)" },
   },
 };
 
@@ -1118,6 +1119,8 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
       reasons.push(`No hay cotización pública en US$ para fijar el precio de ${c.nombre.toLowerCase()} hoy.`);
       reasons.push("Consultá un forward con tu comprador o corredor.");
     }
+    const sg = (MUNDO.sesgo || {})[c.key];
+    if (sg) reasons.push(`Lo que mueve el mercado viene con ${{ bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin dirección clara" }[sg.dir] || "un panorama sin dirección clara"} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${sg.porque}. Tenelo en cuenta al pedir precio.`);
     if (c.evento_proximo) reasons.push(c.evento_proximo);
     return cerrar();
   }
