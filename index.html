@@ -769,6 +769,16 @@ const OTROS_PUERTOS = {
 };
 const TC_BNA = 1515.50;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
 
+/* Capacidad de pago de la exportación: FOB oficial (Secretaría de Agricultura,
+   www.magyp.gob.ar/mercadosagropecuarios/precios.php) menos retenciones.
+   DEX = alícuota de derechos de exportación en % (Decreto 423/2026; revisar cuando cambie). */
+const FOB_OFICIAL = {
+  fecha: "2026-10-19",
+  fuente: "Secretaría de Agricultura, FOB oficial 19-oct-2026",
+  usd: { soja: 490, maiz: 212, trigo: 257, girasol: 593 },
+};
+const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
+
 /* Lo que mueve el mercado: resumen semanal de hechos del mundo (máx. 5 líneas cortas).
    Cada línea: bandera, texto de una oración y fuente con fecha. Solo hechos con cifra y fuente. */
 const MUNDO = {
@@ -1077,6 +1087,18 @@ function lecturaMaximo(c, fut) {
   return { max, caida, alerta, desde: ventana[0].f };
 }
 
+// ---- capacidad de pago de la exportación (FOB oficial menos retenciones) contra la pizarra ----
+function textoCapacidadPago(c) {
+  const fob = (FOB_OFICIAL.usd || {})[c.key], dex = DEX[c.key];
+  if (!fob || dex == null) return null;
+  const neto = fob * (1 - dex / 100);
+  const margen = neto - c.precio_hoy_usd;
+  const base = `Capacidad de pago: el FOB oficial de ${c.nombre.toLowerCase()} es US$ ${fmt(fob)}/t (${fmtFecha(FOB_OFICIAL.fecha)}); descontadas las retenciones (${fmt(dex, 1)}%) quedan US$ ${fmt(neto)}/t`;
+  if (margen < 0) return `${base}, US$ ${fmt(-margen)}/t por debajo de la pizarra${c.estimativo ? " estimativa" : ""}. La exportación está pagando más de lo que le rinde: suele pasar cuando necesita mercadería, y es un buen momento para vender.`;
+  if (margen < 10) return `${base}, apenas US$ ${fmt(margen)}/t por encima de la pizarra${c.estimativo ? " estimativa" : ""}. Esa diferencia casi se va en gastos de puerto: la pizarra ya está pegada a lo que la exportación puede pagar, poco espacio para mejorar por este lado.`;
+  return `${base}, US$ ${fmt(margen)}/t por encima de la pizarra${c.estimativo ? " estimativa" : ""}. Hay margen para que el precio mejore, pero depende de los exportadores: lo trasladan al productor cuando necesitan salir a comprar; con mercadería de sobra, se lo quedan.`;
+}
+
 // ---- motor de recomendación (reglas simples) ----
 function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   const restante = disponible - comprometido;
@@ -1119,6 +1141,8 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
       reasons.push(`No hay cotización pública en US$ para fijar el precio de ${c.nombre.toLowerCase()} hoy.`);
       reasons.push("Consultá un forward con tu comprador o corredor.");
     }
+    const cp0 = textoCapacidadPago(c);
+    if (cp0) reasons.push(cp0);
     const sg = (MUNDO.sesgo || {})[c.key];
     if (sg) reasons.push(`Lo que mueve el mercado viene con ${{ bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin dirección clara" }[sg.dir] || "un panorama sin dirección clara"} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${sg.porque}. Tenelo en cuenta al pedir precio.`);
     if (c.evento_proximo) reasons.push(c.evento_proximo);
@@ -1235,6 +1259,11 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     } else if (futs.length) {
       reasons.push("El mercado a futuro no paga más que el contado de hoy: no hay premio por esperar.");
     }
+  }
+
+  if (estado === "cosechada") {
+    const cp = textoCapacidadPago(c);
+    if (cp) reasons.push(cp);
   }
 
   if (c.evento_proximo) reasons.push(c.evento_proximo);
