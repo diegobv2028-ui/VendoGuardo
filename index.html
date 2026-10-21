@@ -767,6 +767,13 @@ const MUNDO = {
     { pais: "🇦🇷", texto: "Trigo: 64% en condición buena a excelente; se esperan rindes por encima del promedio de las últimas 5 campañas.", fuente: "Bolsa de Cereales de Bs. As., 14-oct" },
     { pais: "🇦🇷", texto: "Maíz sembrado 29,9% (5 puntos más que el año pasado); la siembra de soja todavía no arrancó.", fuente: "Bolsa de Cereales de Bs. As., 14-oct" },
   ],
+  /* Lectura de esas noticias para cada cultivo (la usa el motor cuando la mercadería
+     está en el campo). dir: "bajista" | "alcista" | "neutral". porque: una oración corta. */
+  sesgo: {
+    soja:  { dir: "bajista", porque: "China compra poco y Brasil siembra adelantado, así que su cosecha va a competir antes con la nuestra" },
+    maiz:  { dir: "bajista", porque: "EE.UU. está levantando una cosecha grande, China volvió a abrirle la puerta a su maíz y en Argentina la siembra viene adelantada" },
+    trigo: { dir: "bajista", porque: "el trigo argentino está en muy buena condición y se esperan rindes por encima del promedio" },
+  },
 };
 
 /* Calendario agrícola: rangos generales de Argentina. ini/fin = meses (1-12) en que
@@ -843,6 +850,7 @@ const textoVentana = v => `${nombreIdx(v.ini)} a ${nombreIdx(v.fin)}`;
 // ---- precio de hoy y referencia (observaciones previas dentro de los últimos 30 días) ----
 Object.keys(MERCADO).forEach(key => {
   const c = MERCADO[key];
+  c.key = key;
   const ult = c.historico[c.historico.length - 1];
   c.precio_hoy_usd = ult.usd;
   c.fecha_hoy = ult.f;
@@ -1101,7 +1109,34 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     }
   }
 
-  // 2) reglas por avance de ventas y por precio contra la referencia
+  // 2a) mercadería en el campo: se decide con el futuro de cosecha nueva y con lo que mueve
+  //     el mercado, NO con la pizarra disponible (que todavía no podés vender)
+  if (!action && estado === "campo" && elegido.tipo === "futuro") {
+    const s = (MUNDO.sesgo || {})[c.key];
+    const dirTxt = { bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin una dirección clara" };
+    reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar US$ ${fmt(elegido.precio)}/t.`);
+    if (pctVendido >= 70) {
+      action = "esperar";
+      reasons.push(`Ya tenés cubierto el ${fmt(pctVendido, 0)}% de tu cosecha — no hay apuro por el resto.`);
+    } else {
+      action = "vender";
+      const base = pctVendido < 20 ? 30 : 20;
+      pctSugerido = s && s.dir === "alcista" ? 15 : (s && s.dir === "neutral" ? 20 : base);
+      if (s) {
+        reasons.push(`Lo que mueve el mercado viene con ${dirTxt[s.dir] || dirTxt.neutral} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${s.porque}.`);
+        if (s.dir === "bajista") reasons.push("Con esa presión, el precio de cosecha suele aflojar cuando entra la mercadería: conviene asegurar una parte ahora en lugar de esperar a tener el grano.");
+        else if (s.dir === "alcista") reasons.push("Si esas señales se confirman el precio puede mejorar, por eso alcanza con cubrir una parte chica ahora y dejar el resto para más adelante.");
+      }
+      if (c.ref) {
+        const diff = pct(c.precio_hoy_usd, c.ref.usd);
+        if (diff < -3) reasons.push(`Además, el disponible viene cediendo (${fmtPct(diff)} vs. ${textoReferencia(c)}): si la baja sigue, puede arrastrar también al precio de cosecha.`);
+        else if (diff > 3) reasons.push(`El disponible viene firme (${fmtPct(diff)} vs. ${textoReferencia(c)}), un buen momento para fijar una parte.`);
+      }
+      reasons.push(`Cubrí de a partes: el resto lo decidís más adelante con nuevos datos. Si querés un piso sin resignar una suba, preguntale a tu corredor por una opción put ${elegido.posicion}.`);
+    }
+  }
+
+  // 2b) reglas por avance de ventas y por precio contra la referencia (mercadería cosechada)
   if (!action) {
     if (pctVendido >= 70) {
       action = "esperar";
