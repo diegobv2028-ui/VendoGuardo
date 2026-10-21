@@ -694,6 +694,10 @@ const MERCADO = {
       { posicion: "nov-27", usd: 375.5 },
     ],
     ref_nueva: "may-27",
+    futuros_hist: {
+      "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 } ],
+    },
     evento_proximo: WASDE,
   },
   maiz: {
@@ -711,6 +715,11 @@ const MERCADO = {
       { posicion: "dic-27", usd: 202.5 },
     ],
     ref_nueva: "abr-27",
+    futuros_hist: {
+      "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 } ],
+      "sep-27": [ { f: "2026-10-05", usd: 202 }, { f: "2026-10-07", usd: 204.1 }, { f: "2026-10-13", usd: 199 }, { f: "2026-10-14", usd: 199 }, { f: "2026-10-16", usd: 198 } ],
+    },
     evento_proximo: WASDE,
   },
   trigo: {
@@ -726,6 +735,10 @@ const MERCADO = {
       { posicion: "ene-27", usd: 235.1 }, { posicion: "mar-27", usd: 241 }, { posicion: "jul-27", usd: 246.5 },
     ],
     ref_nueva: "ene-27",
+    futuros_hist: {
+      "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 } ],
+      "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 } ],
+    },
     evento_proximo: "",
   },
   girasol: {
@@ -1051,6 +1064,18 @@ function listarInstrumentos(c, estado, vent) {
   return lista;
 }
 
+// ---- futuro de cosecha contra su máximo reciente (historial de cierres en futuros_hist) ----
+function lecturaMaximo(c, fut) {
+  const h = (c.futuros_hist || {})[fut.posicion];
+  if (!h || h.length < 3) return null;
+  const ult = h[h.length - 1];
+  const ventana = h.filter(p => dias(p.f, ult.f) <= 60);
+  const max = ventana.reduce((a, b) => (b.usd > a.usd ? b : a));
+  const caida = pct(fut.precio, max.usd);
+  const alerta = caida <= -1 ? Math.round((fut.precio + (max.usd - fut.precio) / 2) * 2) / 2 : null;
+  return { max, caida, alerta, desde: ventana[0].f };
+}
+
 // ---- motor de recomendación (reglas simples) ----
 function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   const restante = disponible - comprometido;
@@ -1064,8 +1089,9 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   const reasons = [];
   let action = null;
   let pctSugerido = null;
+  let alerta = null;
 
-  const cerrar = () => ({ action, reasons, pctSugerido, pctVendido, restante, elegido, instrumentos,
+  const cerrar = () => ({ action, reasons, pctSugerido, alerta, pctVendido, restante, elegido, instrumentos,
     tSugeridas: pctSugerido ? Math.min(Math.round(disponible * pctSugerido / 100), restante) : null });
 
   if (restante <= 0) {
@@ -1115,6 +1141,16 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     const s = (MUNDO.sesgo || {})[c.key];
     const dirTxt = { bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin una dirección clara" };
     reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar US$ ${fmt(elegido.precio)}/t.`);
+    const lm = lecturaMaximo(c, elegido);
+    if (lm) {
+      if (lm.alerta) {
+        alerta = lm.alerta;
+        reasons.push(`El ${elegido.posicion} llegó a US$ ${fmt(lm.max.usd)}/t el ${fmtFecha(lm.max.f)} y hoy está ${fmt(Math.abs(lm.caida), 1)}% abajo (US$ ${fmt(lm.max.usd - elegido.precio)}/t menos), según los cierres que registra la app desde el ${fmtFecha(lm.desde)}.`);
+        reasons.push(`Nivel de alerta: si el ${elegido.posicion} vuelve a US$ ${fmt(lm.alerta)}/t (recupera la mitad de lo que perdió), es una buena oportunidad para cubrir otra parte. Cargalo como precio objetivo para que la app te lo marque.`);
+      } else {
+        reasons.push(`El ${elegido.posicion} está en su máximo desde el ${fmtFecha(lm.desde)} (US$ ${fmt(lm.max.usd)}/t el ${fmtFecha(lm.max.f)}): es un buen nivel para cubrir.`);
+      }
+    }
     if (pctVendido >= 70) {
       action = "esperar";
       reasons.push(`Ya tenés cubierto el ${fmt(pctVendido, 0)}% de tu cosecha — no hay apuro por el resto.`);
@@ -1244,7 +1280,7 @@ document.getElementById("calcBtn").addEventListener("click", () => {
     const accion = r.elegido.tipo === "contado" ? "Vender contado" : `Cubrir con ${r.elegido.nombre.toLowerCase()}`;
     labelEl.textContent = r.pctSugerido ? `${accion} el ${r.pctSugerido}%` : accion;
     const tons = r.tSugeridas ? ` · ≈ ${fmt(r.tSugeridas, 0)} t de ${fmt(disponible, 0)}` : ` · te quedan ${fmt(r.restante, 0)} t por decidir`;
-    subEl.textContent = `${info.nombre} · US$ ${fmt(r.elegido.precio)}/t (${r.elegido.corto})${tons}`;
+    subEl.textContent = `${info.nombre} · US$ ${fmt(r.elegido.precio)}/t (${r.elegido.corto})${tons}${r.alerta && r.elegido.tipo === "futuro" ? ` · próxima cobertura si vuelve a US$ ${fmt(r.alerta)}` : ""}`;
   } else if (r.action === "esperar") {
     labelEl.textContent = "Esperar";
     subEl.textContent = `${info.nombre} · US$ ${fmt(info.precio_hoy_usd)}/t pizarra hoy · te quedan ${fmt(r.restante, 0)} t por decidir`;
