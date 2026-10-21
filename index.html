@@ -663,18 +663,18 @@
       (hasta 30 días atrás) se promedian como referencia.
    3) futuros: reemplazar la curva de A3 (posición "mmm-aa" y precio US$/t).
    Fuentes: contado = Cámara Arbitral de Cereales (BCR),
-   www.cac.bcr.com.ar/es/precios-de-pizarra — pizarra del 19-oct-2026
-   (publicada 20-oct, TC BNA comprador $1.515,50).
-   Futuros = A3 Mercados (Matba-Rofex), precios de ajuste del cierre del 16-oct-2026.
+   www.cac.bcr.com.ar/es/precios-de-pizarra — pizarra del 20-oct-2026
+   (TC BNA comprador $1.516,00).
+   Futuros = A3 Mercados (Matba-Rofex), precios de ajuste del cierre del 20-oct-2026.
    Calendario: rangos GENERALES para Argentina (AgroSpray, Infoagro, Climate
    FieldView). No encontré fechas por zona en fuentes públicas: la app le
    pregunta al productor cuándo espera cosechar.
    Girasol: pizarra ESTIMATIVA (E) y sin futuro en US$ público: sin
    recomendación firme. Forward: se negocia caso a caso, sin cotización.
    ===================================================================== */
-const ACTUALIZADO = "20 de octubre de 2026 — contado: pizarra CAC-BCR del 19-oct; futuros: A3 Mercados (Matba-Rofex), cierre del 16-oct (futuros sin dato nuevo); Bahía Blanca y Quequén: pizarra del 15-oct (sin dato nuevo).";
-const FECHA_DATOS = "2026-10-19";   // fecha de la pizarra (mes de referencia del calendario)
-const FUENTE_FUTUROS = "A3, cierre 16-oct-2026";
+const ACTUALIZADO = "21 de octubre de 2026 — contado: pizarra CAC-BCR del 20-oct; futuros: A3 Mercados (Matba-Rofex), cierre del 20-oct; FOB oficial del 20-oct; Bahía Blanca y Quequén: pizarra del 15-oct (sin dato nuevo).";
+const FECHA_DATOS = "2026-10-20";   // fecha de la pizarra (mes de referencia del calendario)
+const FUENTE_FUTUROS = "A3, cierre 20-oct-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
 const WASDE = "El informe WASDE de octubre (USDA) suele salir en la segunda semana del mes y puede mover el precio.";
@@ -683,72 +683,72 @@ const MERCADO = {
   soja: {
     nombre: "Soja",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-06", usd: 370.62 }, { f: "2026-10-07", usd: 371.35 }, { f: "2026-10-08", usd: 371.72 }, { f: "2026-10-09", usd: 371.35 }, { f: "2026-10-13", usd: 372.46 }, { f: "2026-10-14", usd: 370.35 }, { f: "2026-10-15", usd: 372.34 }, { f: "2026-10-16", usd: 365.81 }, { f: "2026-10-19", usd: 364.24 } ],
-    anio_anterior_usd: 333.45,
-    anio_anterior_fecha: "2025-10-17",
+    historico: [ { f: "2026-09-21", usd: 372.09 }, { f: "2026-10-05", usd: 365.65 }, { f: "2026-10-06", usd: 370.62 }, { f: "2026-10-07", usd: 371.35 }, { f: "2026-10-08", usd: 371.72 }, { f: "2026-10-09", usd: 371.35 }, { f: "2026-10-13", usd: 372.46 }, { f: "2026-10-14", usd: 370.35 }, { f: "2026-10-15", usd: 372.34 }, { f: "2026-10-16", usd: 365.81 }, { f: "2026-10-19", usd: 364.24 }, { f: "2026-10-20", usd: 362.80 } ],
+    anio_anterior_usd: 324.71,
+    anio_anterior_fecha: "2025-10-20",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 19-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 20-oct-2026",
     futuros: [
-      { posicion: "oct-26", usd: 368 }, { posicion: "nov-26", usd: 370 }, { posicion: "ene-27", usd: 375 },
-      { posicion: "may-27", usd: 355 }, { posicion: "jul-27", usd: 362.5 }, { posicion: "sep-27", usd: 369 },
-      { posicion: "nov-27", usd: 375.5 },
+      { posicion: "oct-26", usd: 363 }, { posicion: "nov-26", usd: 365 }, { posicion: "ene-27", usd: 370 },
+      { posicion: "may-27", usd: 353.3 }, { posicion: "jul-27", usd: 360.6 }, { posicion: "sep-27", usd: 366.5 },
+      { posicion: "nov-27", usd: 370 },
     ],
     ref_nueva: "may-27",
     futuros_hist: {
-      "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 } ],
-      "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 } ],
+      "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 }, { f: "2026-10-20", usd: 353.3 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 }, { f: "2026-10-20", usd: 360.6 } ],
     },
     evento_proximo: WASDE,
   },
   maiz: {
     nombre: "Maíz",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-06", usd: 194.57 }, { f: "2026-10-07", usd: 195.49 }, { f: "2026-10-08", usd: 194.82 }, { f: "2026-10-09", usd: 193.97 }, { f: "2026-10-13", usd: 191.22 }, { f: "2026-10-14", usd: 190.16 }, { f: "2026-10-15", usd: 190.49 }, { f: "2026-10-16", usd: 188.87 }, { f: "2026-10-19", usd: 185.95 } ],
-    anio_anterior_usd: 180.2,
-    anio_anterior_fecha: "2025-10-17",
+    historico: [ { f: "2026-09-21", usd: 198.67 }, { f: "2026-10-05", usd: 190 }, { f: "2026-10-06", usd: 194.57 }, { f: "2026-10-07", usd: 195.49 }, { f: "2026-10-08", usd: 194.82 }, { f: "2026-10-09", usd: 193.97 }, { f: "2026-10-13", usd: 191.22 }, { f: "2026-10-14", usd: 190.16 }, { f: "2026-10-15", usd: 190.49 }, { f: "2026-10-16", usd: 188.87 }, { f: "2026-10-19", usd: 185.95 }, { f: "2026-10-20", usd: 184.04 } ],
+    anio_anterior_usd: 179.24,
+    anio_anterior_fecha: "2025-10-20",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 19-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 20-oct-2026",
     futuros: [
-      { posicion: "oct-26", usd: 192 }, { posicion: "nov-26", usd: 194 }, { posicion: "dic-26", usd: 197 },
-      { posicion: "ene-27", usd: 200 }, { posicion: "feb-27", usd: 199 }, { posicion: "mar-27", usd: 196 },
-      { posicion: "abr-27", usd: 196.4 }, { posicion: "jul-27", usd: 193.5 }, { posicion: "sep-27", usd: 198 },
-      { posicion: "dic-27", usd: 202.5 },
+      { posicion: "oct-26", usd: 187 }, { posicion: "nov-26", usd: 190 }, { posicion: "dic-26", usd: 194.9 },
+      { posicion: "ene-27", usd: 196.5 }, { posicion: "feb-27", usd: 196.5 }, { posicion: "mar-27", usd: 193.5 },
+      { posicion: "abr-27", usd: 194.5 }, { posicion: "jul-27", usd: 191.5 }, { posicion: "sep-27", usd: 195.6 },
+      { posicion: "dic-27", usd: 200 },
     ],
     ref_nueva: "abr-27",
     futuros_hist: {
-      "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 } ],
-      "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 } ],
-      "sep-27": [ { f: "2026-10-05", usd: 202 }, { f: "2026-10-07", usd: 204.1 }, { f: "2026-10-13", usd: 199 }, { f: "2026-10-14", usd: 199 }, { f: "2026-10-16", usd: 198 } ],
+      "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 }, { f: "2026-10-20", usd: 194.5 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 }, { f: "2026-10-20", usd: 191.5 } ],
+      "sep-27": [ { f: "2026-10-05", usd: 202 }, { f: "2026-10-07", usd: 204.1 }, { f: "2026-10-13", usd: 199 }, { f: "2026-10-14", usd: 199 }, { f: "2026-10-16", usd: 198 }, { f: "2026-10-20", usd: 195.6 } ],
     },
     evento_proximo: WASDE,
   },
   trigo: {
     nombre: "Trigo",
     estimativo: false,
-    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-06", usd: 227 }, { f: "2026-10-07", usd: 226.99 }, { f: "2026-10-08", usd: 227.48 }, { f: "2026-10-09", usd: 226.79 }, { f: "2026-10-13", usd: 230 }, { f: "2026-10-14", usd: 230.05 }, { f: "2026-10-15", usd: 233.01 }, { f: "2026-10-16", usd: 233.93 }, { f: "2026-10-19", usd: 233.98 } ],
-    anio_anterior_usd: 184.16,
-    anio_anterior_fecha: "2025-10-17",
+    historico: [ { f: "2026-09-21", usd: 229.9 }, { f: "2026-10-05", usd: 225 }, { f: "2026-10-06", usd: 227 }, { f: "2026-10-07", usd: 226.99 }, { f: "2026-10-08", usd: 227.48 }, { f: "2026-10-09", usd: 226.79 }, { f: "2026-10-13", usd: 230 }, { f: "2026-10-14", usd: 230.05 }, { f: "2026-10-15", usd: 233.01 }, { f: "2026-10-16", usd: 233.93 }, { f: "2026-10-19", usd: 233.98 }, { f: "2026-10-20", usd: 226.98 } ],
+    anio_anterior_usd: 184.57,
+    anio_anterior_fecha: "2025-10-20",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 19-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 20-oct-2026",
     futuros: [
-      { posicion: "oct-26", usd: 232 }, { posicion: "nov-26", usd: 230 }, { posicion: "dic-26", usd: 230.2 },
-      { posicion: "ene-27", usd: 235.1 }, { posicion: "mar-27", usd: 241 }, { posicion: "jul-27", usd: 246.5 },
+      { posicion: "oct-26", usd: 229 }, { posicion: "nov-26", usd: 225.5 }, { posicion: "dic-26", usd: 226 },
+      { posicion: "ene-27", usd: 231.5 }, { posicion: "mar-27", usd: 237.5 }, { posicion: "jul-27", usd: 243.5 },
     ],
     ref_nueva: "ene-27",
     futuros_hist: {
-      "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 } ],
-      "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 } ],
+      "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 }, { f: "2026-10-20", usd: 226 } ],
+      "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 }, { f: "2026-10-20", usd: 231.5 } ],
     },
     evento_proximo: "",
   },
   girasol: {
     nombre: "Girasol",
     estimativo: true,
-    historico: [ { f: "2026-10-05", usd: 505 }, { f: "2026-10-06", usd: 505 }, { f: "2026-10-07", usd: 505 }, { f: "2026-10-08", usd: 530 }, { f: "2026-10-09", usd: 530 }, { f: "2026-10-13", usd: 530 }, { f: "2026-10-14", usd: 530 }, { f: "2026-10-15", usd: 530 }, { f: "2026-10-16", usd: 530 }, { f: "2026-10-19", usd: 530 } ],
+    historico: [ { f: "2026-10-05", usd: 505 }, { f: "2026-10-06", usd: 505 }, { f: "2026-10-07", usd: 505 }, { f: "2026-10-08", usd: 530 }, { f: "2026-10-09", usd: 530 }, { f: "2026-10-13", usd: 530 }, { f: "2026-10-14", usd: 530 }, { f: "2026-10-15", usd: 530 }, { f: "2026-10-16", usd: 530 }, { f: "2026-10-19", usd: 530 }, { f: "2026-10-20", usd: 530 } ],
     anio_anterior_usd: null,
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 19-oct-2026",
+    contado_fuente: "CAC-BCR, pizarra 20-oct-2026",
     futuros: [],
     ref_nueva: null,
     evento_proximo: "",
@@ -767,15 +767,15 @@ const OTROS_PUERTOS = {
     girasol: { bahia: null, quequen: 500 },
   },
 };
-const TC_BNA = 1515.50;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
+const TC_BNA = 1516.00;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
 
 /* Capacidad de pago de la exportación: FOB oficial (Secretaría de Agricultura,
    www.magyp.gob.ar/mercadosagropecuarios/precios.php) menos retenciones.
    DEX = alícuota de derechos de exportación en % (Decreto 423/2026; revisar cuando cambie). */
 const FOB_OFICIAL = {
-  fecha: "2026-10-19",
-  fuente: "Secretaría de Agricultura, FOB oficial 19-oct-2026",
-  usd: { soja: 490, maiz: 212, trigo: 257, girasol: 593 },
+  fecha: "2026-10-20",
+  fuente: "Secretaría de Agricultura, FOB oficial 20-oct-2026",
+  usd: { soja: 489, maiz: 211, trigo: 252, girasol: 593 },
 };
 const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
 
