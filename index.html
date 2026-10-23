@@ -649,7 +649,7 @@
   </div>
 
   <footer class="foot">
-    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de Rosario de la misma fecha del año anterior (o el día hábil normal más cercano), pasada a dólares con el dólar oficial de referencia (BCRA A3500) de ese día. La variación diaria compara contra la pizarra anterior cargada; la recomendación usa como referencia el promedio de las pizarras de los últimos 30 días. El girasol cotiza con valor estimativo y el forward se negocia caso a caso, por eso no tienen recomendación automática. Confirmá siempre con tu corredor antes de operar.
+    <span id="footUpdated"></span> — contado: Cámara Arbitral de Cereales (BCR), pizarra física de Rosario. Futuros: A3 Mercados (Matba-Rofex), precios de ajuste con la fecha de cierre indicada arriba. Forwards: ofertas abiertas en US$ del mercado físico de Rosario (comentario diario de la Bolsa de Comercio de Rosario); son precios de referencia en Rosario, sin flete ni comisión. Calendario de siembra y cosecha: rangos generales de Argentina (AgroSpray, Infoagro, Climate FieldView); cambian según la zona y la fecha de siembra. Comparación con hace un año: pizarra CAC-BCR de Rosario de la misma fecha del año anterior (o el día hábil normal más cercano), pasada a dólares con el dólar oficial de referencia (BCRA A3500) de ese día. La variación diaria compara contra la pizarra anterior cargada; la recomendación usa como referencia el promedio de las pizarras de los últimos 30 días. El girasol cotiza con valor estimativo en la pizarra y casi no opera en A3: para cosecha nueva la app usa el forward. Confirmá siempre con tu corredor antes de operar.
   </footer>
 </div>
 
@@ -662,6 +662,10 @@
       { f: "AAAA-MM-DD", usd: precio }. La última es "hoy"; las anteriores
       (hasta 30 días atrás) se promedian como referencia.
    3) futuros: reemplazar la curva de A3 (posición "mmm-aa" y precio US$/t).
+   4) forwards: reemplazar las ofertas forward en US$/t del comentario diario del
+      mercado físico de Rosario (BCR, www.bcr.com.ar → Mercados → Comentario del
+      mercado local). Solo posiciones con precio en dólares; si un cultivo no tiene
+      ofertas abiertas, dejar forwards: []. Actualizar FUENTE_FORWARDS.
    Fuentes: contado = Cámara Arbitral de Cereales (BCR),
    www.cac.bcr.com.ar/es/precios-de-pizarra — pizarra del 21-oct-2026
    (TC BNA comprador $1.517,00).
@@ -669,12 +673,14 @@
    Calendario: rangos GENERALES para Argentina (AgroSpray, Infoagro, Climate
    FieldView). No encontré fechas por zona en fuentes públicas: la app le
    pregunta al productor cuándo espera cosechar.
-   Girasol: pizarra ESTIMATIVA (E) y sin futuro en US$ público: sin
-   recomendación firme. Forward: se negocia caso a caso, sin cotización.
+   Forwards = ofertas abiertas del mercado físico de Rosario (comentario diario BCR)
+   del 21-oct-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
+   operaciones: la referencia de cosecha nueva es el forward.
    ===================================================================== */
-const ACTUALIZADO = "22 de octubre de 2026 — contado: pizarra CAC-BCR del 21-oct; futuros: A3 Mercados (Matba-Rofex), cierre del 20-oct (futuros sin dato nuevo); FOB oficial del 21-oct; Bahía Blanca y Quequén: pizarra del 15-oct (sin dato nuevo).";
+const ACTUALIZADO = "22 de octubre de 2026 — contado: pizarra CAC-BCR del 21-oct; futuros: A3 Mercados (Matba-Rofex), cierre del 20-oct (futuros sin dato nuevo); forwards: mercado físico de Rosario (BCR) del 21-oct; FOB oficial del 21-oct; Bahía Blanca y Quequén: pizarra del 15-oct (sin dato nuevo).";
 const FECHA_DATOS = "2026-10-21";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 20-oct-2026";
+const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 21-oct-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
 const WASDE = "El informe WASDE de octubre (USDA) suele salir en la segunda semana del mes y puede mover el precio.";
@@ -694,6 +700,7 @@ const MERCADO = {
       { posicion: "nov-27", usd: 370 },
     ],
     ref_nueva: "may-27",
+    forwards: [],   // 21-oct: solo ofertas en pesos (nov-dic $560.000/t), sin forward en US$
     futuros_hist: {
       "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 }, { f: "2026-10-20", usd: 353.3 } ],
       "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 }, { f: "2026-10-20", usd: 360.6 } ],
@@ -715,6 +722,11 @@ const MERCADO = {
       { posicion: "dic-27", usd: 200 },
     ],
     ref_nueva: "abr-27",
+    forwards: [
+      { posicion: "nov-26", usd: 186 }, { posicion: "dic-26", usd: 188 }, { posicion: "ene-27", usd: 190 },
+      { posicion: "feb-27", usd: 190 }, { posicion: "mar-27", usd: 190 }, { posicion: "abr-27", usd: 188 },
+      { posicion: "may-27", usd: 187 }, { posicion: "jun-27", usd: 185 }, { posicion: "jul-27", usd: 185 },
+    ],
     futuros_hist: {
       "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 }, { f: "2026-10-20", usd: 194.5 } ],
       "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 }, { f: "2026-10-20", usd: 191.5 } ],
@@ -735,6 +747,7 @@ const MERCADO = {
       { posicion: "ene-27", usd: 231.5 }, { posicion: "mar-27", usd: 237.5 }, { posicion: "jul-27", usd: 243.5 },
     ],
     ref_nueva: "ene-27",
+    forwards: [ { posicion: "nov-26", usd: 212 }, { posicion: "dic-26", usd: 210 } ],
     futuros_hist: {
       "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 }, { f: "2026-10-20", usd: 226 } ],
       "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 }, { f: "2026-10-20", usd: 231.5 } ],
@@ -749,8 +762,12 @@ const MERCADO = {
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
     contado_fuente: "CAC-BCR, pizarra 21-oct-2026",
-    futuros: [],
+    futuros: [],    // A3 tiene contrato de girasol pero casi sin operaciones: sin ajuste útil
     ref_nueva: null,
+    forwards: [
+      { posicion: "dic-26", usd: 480 }, { posicion: "ene-27", usd: 480 }, { posicion: "feb-27", usd: 480 },
+    ],
+    forwards_nota: "alto oleico dic–feb: US$ 500/t; marzo a mayo sin ofertas abiertas",
     evento_proximo: "",
   },
 };
@@ -831,8 +848,11 @@ const CALENDARIO = {
     defecto: "nov-dic",
   },
   girasol: {
-    texto: "El girasol se siembra de septiembre a diciembre y se cosecha de marzo a mayo.",
-    ventanas: [ { id: "mar-may", nombre: "Marzo–mayo", ini: 3, fin: 5 } ],
+    texto: "El girasol se siembra de julio a diciembre: en el norte se cosecha de diciembre a febrero y en el centro y sur, de marzo a mayo.",
+    ventanas: [
+      { id: "dic-feb", nombre: "Diciembre–febrero · norte (Chaco, Santiago, N de Santa Fe)", ini: 12, fin: 2 },
+      { id: "mar-may", nombre: "Marzo–mayo · centro y sur", ini: 3, fin: 5 },
+    ],
     defecto: "mar-may",
   },
 };
@@ -954,6 +974,13 @@ Object.keys(MERCADO).forEach(key => {
     if (c.anio_anterior_nota) anioHtml += `<div class="pizarra-year-nota" style="font-size:.8em;opacity:.75;margin-top:2px">${c.anio_anterior_nota}</div>`;
   }
 
+  let fwdHtml = "";
+  const fwds = (c.forwards || []).filter(f => idxPos(f.posicion) > idxDatos);
+  if (fwds.length) {
+    const f = fwds.find(x => x.posicion === c.ref_nueva) || fwds[0];
+    fwdHtml = `<div class="pizarra-year">Forward ${f.posicion}: US$ ${fmt(f.usd)}/t</div>`;
+  }
+
   const item = document.createElement("div");
   item.className = "pizarra-item";
   item.innerHTML = `
@@ -962,6 +989,7 @@ Object.keys(MERCADO).forEach(key => {
     <div class="pizarra-fecha">Pizarra del ${diaSemana(c.fecha_hoy)} ${fmtFechaLarga(c.fecha_hoy)}${c.estimativo ? " · estimativo" : ""}</div>
     ${deltaHtml}
     ${anioHtml}
+    ${fwdHtml}
   `;
   pizarraEl.appendChild(item);
 });
@@ -990,7 +1018,7 @@ function actualizarVentanas(idPreferido) {
   });
   ventanaSelect.value = cal.ventanas.some(v => v.id === idPreferido) ? idPreferido : cal.defecto;
   document.getElementById("calendarioHint").textContent = cal.texto + " Son rangos generales del país: elegí el que mejor se parezca a tu zona y a tu fecha de siembra.";
-  const mostrar = estadoSelect.value === "campo" && MERCADO[key].futuros.length > 0;
+  const mostrar = estadoSelect.value === "campo" && (MERCADO[key].futuros.length > 0 || (MERCADO[key].forwards || []).length > 0);
   document.getElementById("ventanaWrap").style.display = mostrar ? "block" : "none";
 }
 cultivoSelect.addEventListener("change", () => actualizarVentanas());
@@ -1046,7 +1074,8 @@ function listarInstrumentos(c, estado, vent) {
     .sort((a, b) => a.i - b.i);
 
   if (!futs.length) {
-    lista.push({ tipo: "futuro", nombre: "Futuro", precio: null, detalle: "sin cotización en US$ disponible", viable: false, sinPrecio: true });
+    lista.push({ tipo: "futuro", nombre: "Futuro", precio: null, viable: false, sinPrecio: true,
+      detalle: (c.forwards || []).length ? "en A3 casi no hay operaciones: usá el forward como referencia" : "sin cotización en US$ disponible" });
   } else {
     const antes = estado === "campo" && vent ? futs.filter(x => x.i < vent.ini) : [];
     if (antes.length) {
@@ -1071,7 +1100,34 @@ function listarInstrumentos(c, estado, vent) {
     });
   }
 
-  lista.push({ tipo: "forward", nombre: "Forward", precio: null, detalle: "se negocia caso a caso: pedile precio a tu comprador o corredor", viable: false, sinPrecio: true });
+  const fwds = (c.forwards || [])
+    .map(f => ({ f, i: idxPos(f.posicion) }))
+    .filter(x => x.i > idxDatos && x.i <= idxDatos + MAX_MESES)
+    .sort((a, b) => a.i - b.i);
+  if (!fwds.length) {
+    lista.push({ tipo: "forward", nombre: "Forward", precio: null, detalle: "sin ofertas abiertas en US$ hoy: pedile precio a tu comprador o corredor", viable: false, sinPrecio: true });
+  } else {
+    const fAntes = estado === "campo" && vent ? fwds.filter(x => x.i < vent.ini) : [];
+    if (fAntes.length) {
+      const a = fAntes[0].f.posicion, b = fAntes[fAntes.length - 1].f.posicion;
+      lista.push({
+        tipo: "forward-antes", nombre: a === b ? `Forward ${a}` : `Forwards ${a} a ${b}`, precio: null, viable: false, sinPrecio: true,
+        detalle: `se entregan antes de tu cosecha (${vent.nombre.toLowerCase()}): no tenés la mercadería para cumplir`,
+      });
+    }
+    fwds.filter(x => !fAntes.includes(x)).forEach(x => {
+      const f = x.f;
+      const dif = f.usd - c.precio_hoy_usd;
+      let detalle = `entrega en ${f.posicion}; ${signo(dif)}${fmt(dif)} US$/t vs. ${c.estimativo ? "el contado estimativo" : "el contado de hoy"}`;
+      if (estado === "campo" && vent) detalle = (x.i <= vent.fin ? "se entrega durante tu cosecha; " : "se entrega después de tu cosecha; ") + detalle;
+      lista.push({
+        tipo: "forward", nombre: `Forward ${f.posicion}`, precio: f.usd, posicion: f.posicion, idx: x.i,
+        detalle, corto: `forward ${f.posicion}`, fuente: FUENTE_FORWARDS, viable: true,
+        sirveCosecha: estado === "campo" && vent ? x.i >= vent.ini : true,
+      });
+    });
+    if (c.forwards_nota) lista.push({ tipo: "nota", nombre: "Otras ofertas", precio: null, viable: false, sinPrecio: true, detalle: c.forwards_nota });
+  }
   return lista;
 }
 
@@ -1108,6 +1164,7 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   let elegido = viables.find(i => i.tipo === "contado")
     || viables.find(i => i.tipo === "futuro" && i.despuesCosecha)
     || viables.filter(i => i.tipo === "futuro").slice(-1)[0]
+    || (estado === "campo" ? viables.find(i => i.tipo === "forward" && i.sirveCosecha) : null)
     || null;
   const reasons = [];
   let action = null;
@@ -1125,7 +1182,9 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
 
   if (estado === "campo") {
     reasons.push("Como todavía no cosechaste, el contado no está disponible — la forma de asegurar precio ahora es un futuro de cosecha nueva (o un forward que negocies con tu comprador).");
-    if (vent && c.futuros.length) {
+    if (vent && (c.futuros.length || (c.forwards || []).length)) {
+      const fa = instrumentos.find(i => i.tipo === "forward-antes");
+      if (fa && !instrumentos.some(i => i.tipo === "futuro-antes")) reasons.push(`Elegiste cosechar en ${vent.nombre.toLowerCase()} (${textoVentana(vent)}): los forwards con entrega anterior no los podés cumplir.`);
       const antes = instrumentos.find(i => i.tipo === "futuro-antes");
       if (antes) reasons.push(`Elegiste cosechar en ${vent.nombre.toLowerCase()} (${textoVentana(vent)}): los futuros anteriores vencen antes de que tengas la mercadería, así que no se usan para cubrir.`);
     }
@@ -1136,6 +1195,8 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     action = "consultar";
     if (elegido) {
       reasons.push(`El precio de ${c.nombre.toLowerCase()} es estimativo (E): no hay operaciones que lo respalden, así que no es una base firme para decidir.`);
+      const fw = instrumentos.filter(i => i.tipo === "forward" && i.viable);
+      if (fw.length) reasons.push(`Lo que sí tiene precio es el forward de cosecha nueva: ${fw.map(i => `${i.posicion} US$ ${fmt(i.precio)}/t`).join(", ")} (${FUENTE_FORWARDS}). Sirve para fijar precio de la próxima cosecha, o para la que ya tenés si podés guardarla hasta esa entrega.`);
       reasons.push("Pedí un precio firme a tu comprador o corredor (contado o forward) antes de vender.");
     } else {
       reasons.push(`No hay cotización pública en US$ para fijar el precio de ${c.nombre.toLowerCase()} hoy.`);
@@ -1164,7 +1225,7 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
 
   // 2a) mercadería en el campo: se decide con el futuro de cosecha nueva y con lo que mueve
   //     el mercado, NO con la pizarra disponible (que todavía no podés vender)
-  if (!action && estado === "campo" && elegido.tipo === "futuro") {
+  if (!action && estado === "campo" && (elegido.tipo === "futuro" || elegido.tipo === "forward")) {
     const s = (MUNDO.sesgo || {})[c.key];
     const dirTxt = { bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin una dirección clara" };
     reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar US$ ${fmt(elegido.precio)}/t.`);
@@ -1195,7 +1256,13 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
         if (diff < -3) reasons.push(`Además, el disponible viene cediendo (${fmtPct(diff)} vs. ${textoReferencia(c)}): si la baja sigue, puede arrastrar también al precio de cosecha.`);
         else if (diff > 3) reasons.push(`El disponible viene firme (${fmtPct(diff)} vs. ${textoReferencia(c)}), un buen momento para fijar una parte.`);
       }
-      reasons.push(`Cubrí de a partes: el resto lo decidís más adelante con nuevos datos. Si querés un piso sin resignar una suba, preguntale a tu corredor por una opción put ${elegido.posicion}.`);
+      if (elegido.tipo === "forward") {
+        reasons.push(`No hay futuro con operaciones para ${c.nombre.toLowerCase()} en A3, por eso la referencia es el forward: es un contrato directo con el comprador (${FUENTE_FORWARDS}). Antes de cerrar, confirmá calidad, lugar de entrega, flete y forma de pago.`);
+        if (c.forwards_nota) reasons.push(`Además: ${c.forwards_nota}.`);
+        reasons.push("Cubrí de a partes: el resto lo decidís más adelante con nuevos datos.");
+      } else {
+        reasons.push(`Cubrí de a partes: el resto lo decidís más adelante con nuevos datos. Si querés un piso sin resignar una suba, preguntale a tu corredor por una opción put ${elegido.posicion}.`);
+      }
     }
   }
 
@@ -1231,6 +1298,10 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   }
 
   // 3) cobertura con futuro de cosecha nueva: qué vencimiento y cuánto paga
+  if (action === "vender" && estado === "campo" && elegido.tipo === "forward" && !c.estimativo) {
+    const dif = pct(elegido.precio, c.precio_hoy_usd);
+    reasons.push(`El ${elegido.nombre.toLowerCase()} paga ${fmtPct(dif)} vs. el contado de hoy.`);
+  }
   if (action === "vender" && estado === "campo" && elegido.tipo === "futuro") {
     const dif = pct(elegido.precio, c.precio_hoy_usd);
     const primero = viables.find(i => i.tipo === "futuro" && i.despuesCosecha);
@@ -1340,7 +1411,7 @@ document.getElementById("calcBtn").addEventListener("click", () => {
     const cls = !i.viable ? "na" : (recomendado ? "best" : "");
     let precioTexto, detalleTexto;
     if (i.sinPrecio) {
-      precioTexto = i.tipo === "futuro-antes" ? "no sirven" : "sin cotización";
+      precioTexto = (i.tipo === "futuro-antes" || i.tipo === "forward-antes") ? "no sirven" : (i.tipo === "nota" ? "—" : "sin cotización");
       detalleTexto = i.detalle;
     } else if (!i.viable) {
       precioTexto = "no disponible";
