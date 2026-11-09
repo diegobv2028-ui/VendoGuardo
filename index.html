@@ -801,21 +801,21 @@ const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
 /* Lo que mueve el mercado: resumen semanal de hechos del mundo (máx. 5 líneas cortas).
    Cada línea: bandera, texto de una oración y fuente con fecha. Solo hechos con cifra y fuente. */
 const MUNDO = {
-  fecha: "2026-10-26",
+  fecha: "2026-11-09",
   items: [
-    { pais: "🇺🇸", texto: "EE.UU. lleva cosechado el 64% de la soja (promedio 65%) pero el maíz va atrasado: 44% contra 52% de promedio.", fuente: "USDA (Crop Progress) vía Agrositio, 20-oct" },
-    { pais: "🇨🇳", texto: "China le compró otras 134.000 t de soja a EE.UU., pero al poroto americano le cobra 13% de arancel contra 3% al brasileño.", fuente: "USDA, 21-oct; BCR vía Agrositio, 23-oct" },
-    { pais: "🇧🇷", texto: "Brasil ya sembró el 30% de la soja, por encima del 26% de promedio para esta fecha.", fuente: "Conab vía Agrositio, 22-oct" },
-    { pais: "🇦🇷", texto: "Trigo: la Bolsa de Rosario estima 23,8 Mt, 16,5% menos que el año pasado, y las heladas recortaron entre 10% y 15% en lotes tempranos.", fuente: "GEA-BCR y Bolsa de Cereales de Bs. As. vía Agrositio, 22-oct" },
-    { pais: "🇦🇷", texto: "Maíz: Argentina embarcaría 3,9 Mt en octubre, 67% más que un mes promedio, mientras Brasil exporta 32% menos y Ucrania casi no despacha.", fuente: "BCR vía Agrositio, 23-oct" },
+    { pais: "🇺🇸", texto: "EE.UU. ya levantó el 88% de la soja, cuatro puntos más que el promedio de 84%, y este martes 10 sale el WASDE de noviembre.", fuente: "USDA (Crop Progress) vía BCR y Agrositio, 6-nov" },
+    { pais: "🇨🇳", texto: "China volvió a comprar soja americana, pero apenas 136.000 t, mientras EE.UU. despachó 2,53 Mt en una semana, lo más alto de la campaña.", fuente: "USDA vía Agrositio, 9-nov" },
+    { pais: "🇧🇷", texto: "Brasil cosecharía 5,73 Mt de trigo, 27% menos que el año pasado, y tendría que importar unas 7,5 Mt, un récord.", fuente: "Conab y USDA vía BCR y Agrositio, 6-nov" },
+    { pais: "🇦🇷", texto: "Siembra: el girasol va 72,4% de 3,1 Mha (7 puntos adelantado), el maíz 50,5% y la soja 4,7%; del trigo se cosechó 8,5% y se proyectan 23,4 Mt.", fuente: "Bolsa de Cereales de Bs. As. vía Agrositio, 5-nov" },
+    { pais: "🇦🇷", texto: "Maíz: Argentina exportó más de 3,9 Mt en octubre y Brasil 12,5% menos que el año pasado, pero acá quedan 14,4 Mt sin vender, el máximo de la serie.", fuente: "NABSA, ANEC y BCR vía Agrositio, 6-nov" },
   ],
   /* Lectura de esas noticias para cada cultivo (la usa el motor cuando la mercadería
      está en el campo). dir: "bajista" | "alcista" | "neutral". porque: una oración corta. */
   sesgo: {
-    soja:  { dir: "bajista", porque: "Brasil siembra adelantado y paga menos arancel en China, así que su cosecha le va a competir fuerte a la nuestra" },
-    maiz:  { dir: "alcista", porque: "la demanda por maíz argentino está firme porque Brasil y Ucrania exportan poco, y la cosecha de EE.UU. viene atrasada" },
-    trigo: { dir: "neutral", porque: "las heladas achican la cosecha argentina, pero igual se esperan casi 24 Mt, una de las más grandes de los últimos años" },
-    girasol: { dir: "neutral", porque: "esta semana no hubo datos nuevos de precio ni de demanda para el girasol" },
+    soja:  { dir: "bajista", porque: "EE.UU. ya levantó casi toda una cosecha grande y China le compra poco, así que sobra soja en el mundo" },
+    maiz:  { dir: "neutral", porque: "la exportación argentina viene fuerte y Brasil despacha menos, pero acá queda un récord de maíz sin vender" },
+    trigo: { dir: "alcista", porque: "Brasil pierde un cuarto de su cosecha y va a tener que importar más, y el trigo argentino es el que tiene más a mano" },
+    girasol: { dir: "neutral", porque: "la siembra viene adelantada pero esta semana no hubo datos nuevos de precio ni de demanda para el girasol" },
   },
 };
 
