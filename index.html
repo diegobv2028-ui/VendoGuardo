@@ -674,16 +674,16 @@
    FieldView). No encontré fechas por zona en fuentes públicas: la app le
    pregunta al productor cuándo espera cosechar.
    Forwards = ofertas abiertas del mercado físico de Rosario (comentario diario BCR)
-   del 12-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
+   del 13-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
    operaciones: la referencia de cosecha nueva es el forward.
    ===================================================================== */
-const ACTUALIZADO = "13 de noviembre de 2026 — contado: pizarra CAC-BCR del 12-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 11-nov; forwards: mercado físico de Rosario (BCR) del 12-nov; FOB oficial del 12-nov; Bahía Blanca y Quequén: pizarra del 12-nov.";
+const ACTUALIZADO = "13 de noviembre de 2026 — contado: pizarra CAC-BCR del 12-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 11-nov (futuros sin dato nuevo); forwards: mercado físico de Rosario (BCR) del 13-nov; FOB oficial del 12-nov; Bahía Blanca y Quequén: pizarra del 12-nov.";
 const FECHA_DATOS = "2026-11-12";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 11-nov-2026";
-const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 12-nov-2026";
+const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 13-nov-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
-const WASDE = "El informe WASDE de octubre (USDA) suele salir en la segunda semana del mes y puede mover el precio.";
+const WASDE = "El USDA publica el informe WASDE todos los meses, alrededor del día 10, y puede mover el precio.";
 
 const MERCADO = {
   soja: {
@@ -699,7 +699,7 @@ const MERCADO = {
       { posicion: "jul-27", usd: 355 }, { posicion: "sep-27", usd: 361.5 }, { posicion: "nov-27", usd: 367 },
     ],
     ref_nueva: "may-27",
-    forwards: [],   // 12-nov: sin ofertas en US$; solo en pesos: disponible, fijaciones, noviembre y diciembre $540.000 (nov y dic solo EPA/EUDR)
+    forwards: [],   // 13-nov: sin ofertas en US$; solo en pesos: disponible $540.000; contractual y diciembre (EPA/EUDR) $545.000
     futuros_hist: {
       "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 }, { f: "2026-10-20", usd: 353.3 }, { f: "2026-10-22", usd: 353.8 }, { f: "2026-10-23", usd: 355.8 }, { f: "2026-11-05", usd: 339 }, { f: "2026-11-11", usd: 345.5 } ],
       "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 }, { f: "2026-10-20", usd: 360.6 }, { f: "2026-10-22", usd: 361.3 }, { f: "2026-10-23", usd: 363.5 }, { f: "2026-11-05", usd: 348.7 }, { f: "2026-11-11", usd: 355 } ],
@@ -721,7 +721,7 @@ const MERCADO = {
     ],
     ref_nueva: "abr-27",
     forwards: [
-      { posicion: "dic-26", usd: 182 }, { posicion: "ene-27", usd: 185 }, { posicion: "feb-27", usd: 185 },
+      { posicion: "dic-26", usd: 182 }, { posicion: "ene-27", usd: 188 }, { posicion: "feb-27", usd: 185 },
       { posicion: "mar-27", usd: 181 }, { posicion: "abr-27", usd: 181 }, { posicion: "may-27", usd: 181 },
       { posicion: "jun-27", usd: 180 }, { posicion: "jul-27", usd: 178 },
     ],
@@ -746,7 +746,7 @@ const MERCADO = {
     ],
     ref_nueva: "ene-27",
     forwards: [
-      { posicion: "dic-26", usd: 190 }, { posicion: "ene-27", usd: 200 }, { posicion: "feb-27", usd: 205 },
+      { posicion: "dic-26", usd: 190 }, { posicion: "ene-27", usd: 200 }, { posicion: "feb-27", usd: 202 },
       { posicion: "mar-27", usd: 205 },
     ],
     futuros_hist: {
@@ -801,9 +801,9 @@ const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
 /* Lo que mueve el mercado: resumen semanal de hechos del mundo (máx. 5 líneas cortas).
    Cada línea: bandera, texto de una oración y fuente con fecha. Solo hechos con cifra y fuente. */
 const MUNDO = {
-  fecha: "2026-11-09",
+  fecha: "2026-11-13",
   items: [
-    { pais: "🇺🇸", texto: "EE.UU. ya levantó el 88% de la soja, cuatro puntos más que el promedio de 84%, y este martes 10 sale el WASDE de noviembre.", fuente: "USDA (Crop Progress) vía BCR y Agrositio, 6-nov" },
+    { pais: "🇺🇸", texto: "El WASDE de noviembre bajó las existencias finales de soja de EE.UU. a 8,16 Mt (el mercado esperaba 9,01 Mt) porque va a exportar más, y la soja subió unos US$ 14,7/t en Chicago.", fuente: "USDA (WASDE) vía Agrositio, 11-nov" },
     { pais: "🇨🇳", texto: "China volvió a comprar soja americana, pero apenas 136.000 t, mientras EE.UU. despachó 2,53 Mt en una semana, lo más alto de la campaña.", fuente: "USDA vía Agrositio, 9-nov" },
     { pais: "🇧🇷", texto: "Brasil cosecharía 5,73 Mt de trigo, 27% menos que el año pasado, y tendría que importar unas 7,5 Mt, un récord.", fuente: "Conab y USDA vía BCR y Agrositio, 6-nov" },
     { pais: "🇦🇷", texto: "Siembra: el girasol va 72,4% de 3,1 Mha (7 puntos adelantado), el maíz 50,5% y la soja 4,7%; del trigo se cosechó 8,5% y se proyectan 23,4 Mt.", fuente: "Bolsa de Cereales de Bs. As. vía Agrositio, 5-nov" },
@@ -812,7 +812,7 @@ const MUNDO = {
   /* Lectura de esas noticias para cada cultivo (la usa el motor cuando la mercadería
      está en el campo). dir: "bajista" | "alcista" | "neutral". porque: una oración corta. */
   sesgo: {
-    soja:  { dir: "bajista", porque: "EE.UU. ya levantó casi toda una cosecha grande y China le compra poco, así que sobra soja en el mundo" },
+    soja:  { dir: "neutral", porque: "el USDA recortó las existencias de EE.UU. y la soja rebotó en Chicago, pero China sigue comprando poco" },
     maiz:  { dir: "neutral", porque: "la exportación argentina viene fuerte y Brasil despacha menos, pero acá queda un récord de maíz sin vender" },
     trigo: { dir: "alcista", porque: "Brasil pierde un cuarto de su cosecha y va a tener que importar más, y el trigo argentino es el que tiene más a mano" },
     girasol: { dir: "neutral", porque: "la siembra viene adelantada pero esta semana no hubo datos nuevos de precio ni de demanda para el girasol" },
