@@ -924,6 +924,14 @@ const FECHA_FUTUROS_ISO = (() => {
 })();
 const futurosViejos = () => !!FECHA_FUTUROS_ISO && FECHA_FUTUROS_ISO < FECHA_DATOS;
 const notaCierre = () => (futurosViejos() ? ` (cierre del ${fmtFecha(FECHA_FUTUROS_ISO)})` : "");
+const hoyIsoLocal = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
+function diasHabiles(a, b) { // días hábiles (lunes a viernes) después de a y hasta b
+  let n = 0; const d = new Date(a + "T12:00:00Z"), fin = new Date(b + "T12:00:00Z");
+  while (d < fin) { d.setUTCDate(d.getUTCDate() + 1); const w = d.getUTCDay(); if (w !== 0 && w !== 6) n++; }
+  return n;
+}
+// futuros con más de 2 días hábiles de atraso respecto de hoy: no se muestran como precio "de hoy"
+const futurosMuyViejos = () => !!FECHA_FUTUROS_ISO && diasHabiles(FECHA_FUTUROS_ISO, hoyIsoLocal()) > 2;
 
 function armarContexto() {
   const claves = Object.keys(MERCADO).filter(k => !MERCADO[k].estimativo);
@@ -962,9 +970,9 @@ document.getElementById("contextoTexto").textContent = armarContexto();
   if (atraso <= 0) {
     txt = `Precios de la <strong>pizarra de hoy, ${fechaTxt}</strong>.`;
   } else if (atraso <= 4) {
-    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>, la última publicada. La Cámara Arbitral de Rosario publica la pizarra a la tarde de cada día hábil; los fines de semana y feriados no hay pizarra.`;
+    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>, la última publicada. La Cámara Arbitral de Rosario fija la pizarra al cierre de cada día hábil y se conoce a última hora, así que la app la carga en la actualización siguiente; los fines de semana y feriados no hay pizarra.`;
   } else {
-    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>. La Cámara Arbitral de Rosario publica la pizarra a la tarde de cada día hábil; como pasaron varios días, confirmá el precio con tu corredor.`;
+    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>. La Cámara Arbitral de Rosario fija la pizarra al cierre de cada día hábil; como pasaron varios días, confirmá el precio con tu corredor.`;
   }
   document.getElementById("pizarraNota").innerHTML = txt;
 })();
@@ -1254,7 +1262,11 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     const s = (MUNDO.sesgo || {})[c.key];
     const dirTxt = { bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin una dirección clara" };
     const viejo = elegido.tipo === "futuro" && futurosViejos();
-    reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar alrededor de US$ ${fmt(elegido.precio)}/t${viejo ? ` (es el cierre del ${fmtFecha(FECHA_FUTUROS_ISO)}, el último disponible: confirmá el precio actual con tu corredor)` : ""}.`);
+    if (viejo && futurosMuyViejos()) {
+      reasons.push(`Para tu cosecha la referencia no es la pizarra sino el ${elegido.nombre.toLowerCase()}. El último precio que tiene la app es US$ ${fmt(elegido.precio)}/t, del cierre del ${fmtFecha(FECHA_FUTUROS_ISO)}: ya es viejo, así que pedile a tu corredor la cotización de hoy antes de fijar. Cuánto cubrir y el nivel de alerta valen igual.`);
+    } else {
+      reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar alrededor de US$ ${fmt(elegido.precio)}/t${viejo ? ` (es el cierre del ${fmtFecha(FECHA_FUTUROS_ISO)}, el último disponible: confirmá el precio actual con tu corredor)` : ""}.`);
+    }
     const lm = lecturaMaximo(c, elegido);
     if (lm) {
       if (lm.alerta) {
@@ -1415,10 +1427,13 @@ document.getElementById("calcBtn").addEventListener("click", () => {
     const accion = r.elegido.tipo === "contado" ? "Vender contado" : `Cubrir con ${r.elegido.nombre.toLowerCase()}`;
     labelEl.textContent = r.pctSugerido ? `${accion} el ${r.pctSugerido}%` : accion;
     const tons = r.tSugeridas ? ` · ≈ ${fmt(r.tSugeridas, 0)} t de ${fmt(disponible, 0)}` : ` · te quedan ${fmt(r.restante, 0)} t por decidir`;
-    subEl.textContent = `${info.nombre} · US$ ${fmt(r.elegido.precio)}/t (${r.elegido.corto})${tons}${r.alerta && r.elegido.tipo === "futuro" ? ` · próxima cobertura si vuelve a US$ ${fmt(r.alerta)}` : ""}`;
+    const precioTxt = r.elegido.tipo === "futuro" && futurosMuyViejos()
+      ? `último precio conocido US$ ${fmt(r.elegido.precio)}/t (${r.elegido.corto}) · pedí la cotización de hoy`
+      : `US$ ${fmt(r.elegido.precio)}/t (${r.elegido.corto})`;
+    subEl.textContent = `${info.nombre} · ${precioTxt}${tons}${r.alerta && r.elegido.tipo === "futuro" ? ` · próxima cobertura si vuelve a US$ ${fmt(r.alerta)}` : ""}`;
   } else if (r.action === "esperar") {
     labelEl.textContent = "Esperar";
-    subEl.textContent = `${info.nombre} · US$ ${fmt(info.precio_hoy_usd)}/t pizarra hoy · te quedan ${fmt(r.restante, 0)} t por decidir`;
+    subEl.textContent = `${info.nombre} · US$ ${fmt(info.precio_hoy_usd)}/t pizarra del ${fmtFecha(info.fecha_hoy)} · te quedan ${fmt(r.restante, 0)} t por decidir`;
   } else if (r.action === "consultar") {
     labelEl.textContent = "Consultá un precio firme";
     subEl.textContent = info.estimativo
