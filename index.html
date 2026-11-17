@@ -321,6 +321,9 @@
     line-height: 1.55;
   }
   ul.reasons li { margin-bottom: 6px; }
+  ul.reasons li.extra { display: none; }
+  ul.reasons.abierto li.extra { display: list-item; }
+  button.mas-btn { background: none; border: none; padding: 0; margin: 0 0 6px; color: var(--green); font-family: var(--font-body); font-size: 0.84rem; font-weight: 600; text-decoration: underline; cursor: pointer; }
   .disclaimer-inline {
     border-top: 1px solid var(--border);
     margin-top: 16px;
@@ -587,6 +590,7 @@
         <div class="neto-box" id="netoBox" hidden></div>
         <p class="why-title">Por qué</p>
         <ul class="reasons" id="reasons"></ul>
+        <button type="button" class="mas-btn" id="reasonsMas" hidden></button>
 
         <p class="why-title">Comparación de precios</p>
         <table class="compare" id="compareTable"></table>
@@ -677,7 +681,7 @@
    del 13-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
    operaciones: la referencia de cosecha nueva es el forward.
    ===================================================================== */
-const ACTUALIZADO = "16 de noviembre de 2026 — contado: pizarra CAC-BCR del 13-nov (maíz y girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 11-nov (futuros sin dato nuevo); forwards: mercado físico de Rosario (BCR) del 13-nov; FOB oficial del 13-nov; Bahía Blanca y Quequén: pizarra del 12-nov.";
+const ACTUALIZADO = "16 de noviembre de 2026 — contado: pizarra CAC-BCR del 13-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 11-nov (futuros sin dato nuevo); forwards: mercado físico de Rosario (BCR) del 13-nov; FOB oficial del 13-nov; Bahía Blanca y Quequén: pizarra del 12-nov.";
 const FECHA_DATOS = "2026-11-13";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 11-nov-2026";
 const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 13-nov-2026";
@@ -909,8 +913,17 @@ Object.keys(MERCADO).forEach(key => {
 function textoReferencia(c) {
   if (!c.ref) return "";
   if (c.ref.n === 1) return `la pizarra del ${fmtFecha(c.ref.desde)}`;
-  return `el promedio de la pizarra entre el ${fmtFecha(c.ref.desde)} y el ${fmtFecha(c.ref.hasta)} (${c.ref.n} observaciones)`;
+  return `el promedio de la pizarra del último mes (${fmtFecha(c.ref.desde)} al ${fmtFecha(c.ref.hasta)})`;
 }
+const deRef = c => ("de " + textoReferencia(c)).replace(/^de el /, "del ");
+// fecha del último cierre de futuros cargado (sale de FUENTE_FUTUROS, ej. "A3, cierre 11-nov-2026")
+const FECHA_FUTUROS_ISO = (() => {
+  const m = String(FUENTE_FUTUROS).match(/(\d{1,2})-([a-z]{3})-(\d{4})/i);
+  if (!m || MESES.indexOf(m[2].toLowerCase()) < 0) return null;
+  return `${m[3]}-${String(MESES.indexOf(m[2].toLowerCase()) + 1).padStart(2, "0")}-${m[1].padStart(2, "0")}`;
+})();
+const futurosViejos = () => !!FECHA_FUTUROS_ISO && FECHA_FUTUROS_ISO < FECHA_DATOS;
+const notaCierre = () => (futurosViejos() ? ` (cierre del ${fmtFecha(FECHA_FUTUROS_ISO)})` : "");
 
 function armarContexto() {
   const claves = Object.keys(MERCADO).filter(k => !MERCADO[k].estimativo);
@@ -922,7 +935,7 @@ function armarContexto() {
   const conRef = claves.filter(k => MERCADO[k].ref);
   if (conRef.length) {
     const refTxt = conRef.map(k => `${MERCADO[k].nombre.toLowerCase()} ${fmtPct(pct(MERCADO[k].precio_hoy_usd, MERCADO[k].ref.usd))}`).join(", ");
-    txt += ` Respecto de ${textoReferencia(MERCADO[conRef[0]])}: ${refTxt}.`;
+    txt += ` Respecto ${deRef(MERCADO[conRef[0]])}: ${refTxt}.`;
     if (conRef.every(k => MERCADO[k].precio_hoy_usd < MERCADO[k].ref.usd)) txt += " Los tres cultivos vienen cediendo.";
   }
   const fut = claves.filter(k => MERCADO[k].ref_nueva).map(k => {
@@ -949,9 +962,9 @@ document.getElementById("contextoTexto").textContent = armarContexto();
   if (atraso <= 0) {
     txt = `Precios de la <strong>pizarra de hoy, ${fechaTxt}</strong>.`;
   } else if (atraso <= 4) {
-    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>, la última publicada. La Cámara Arbitral de Rosario publica cada pizarra a la mañana del día hábil siguiente; los fines de semana y feriados no hay pizarra.`;
+    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>, la última publicada. La Cámara Arbitral de Rosario publica la pizarra a la tarde de cada día hábil; los fines de semana y feriados no hay pizarra.`;
   } else {
-    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>. La Cámara Arbitral de Rosario publica cada pizarra al día hábil siguiente; si pasaron varios días hábiles, confirmá el precio con tu corredor.`;
+    txt = `Precios de la <strong>pizarra del ${fechaTxt}</strong>. La Cámara Arbitral de Rosario publica la pizarra a la tarde de cada día hábil; como pasaron varios días, confirmá el precio con tu corredor.`;
   }
   document.getElementById("pizarraNota").innerHTML = txt;
 })();
@@ -1096,7 +1109,7 @@ function listarInstrumentos(c, estado, vent) {
       }
       lista.push({
         tipo: "futuro", nombre: `Futuro ${f.posicion}`, precio: f.usd, posicion: f.posicion, idx: x.i,
-        detalle, corto: `futuro ${f.posicion}`, fuente: FUENTE_FUTUROS, viable: true,
+        detalle, corto: `futuro ${f.posicion}${futurosViejos() ? ", cierre " + fmtFecha(FECHA_FUTUROS_ISO) : ""}`, fuente: FUENTE_FUTUROS, viable: true,
         despuesCosecha: estado === "campo" && vent ? x.i >= vent.fin : true,
       });
     });
@@ -1120,7 +1133,7 @@ function listarInstrumentos(c, estado, vent) {
     fwds.filter(x => !fAntes.includes(x)).forEach(x => {
       const f = x.f;
       const dif = f.usd - c.precio_hoy_usd;
-      let detalle = `entrega en ${f.posicion}; ${signo(dif)}${fmt(dif)} US$/t vs. ${c.estimativo ? "el contado estimativo" : "el contado de hoy"}`;
+      let detalle = c.estimativo ? `precio firme para entregar en ${f.posicion}` : `entrega en ${f.posicion}; ${signo(dif)}${fmt(dif)} US$/t vs. el contado de hoy`;
       if (estado === "campo" && vent) detalle = (x.i <= vent.fin ? "se entrega durante tu cosecha; " : "se entrega después de tu cosecha; ") + detalle;
       lista.push({
         tipo: "forward", nombre: `Forward ${f.posicion}`, precio: f.usd, posicion: f.posicion, idx: x.i,
@@ -1157,6 +1170,22 @@ function textoCapacidadPago(c) {
   return `${base}, US$ ${fmt(margen)}/t por encima de la pizarra${c.estimativo ? " estimativa" : ""}. Hay margen para que el precio mejore, pero depende de los exportadores: lo trasladan al productor cuando necesitan salir a comprar; con mercadería de sobra, se lo quedan.`;
 }
 
+// ---- cuánto paga el mercado por guardar (forward o futuro, hasta 6 meses) ----
+function premioEspera(c, viables) {
+  const lim = idxDatos + 6;
+  const cand = viables.filter(i => (i.tipo === "futuro" || i.tipo === "forward") && i.idx != null && i.idx <= lim && i.precio > c.precio_hoy_usd);
+  if (!cand.length) return null;
+  const fw = cand.filter(i => i.tipo === "forward");
+  const pool = fw.length ? fw : cand;   // el forward es precio físico real: se prefiere
+  const inst = pool.reduce((a, b) => (b.precio > a.precio ? b : a));
+  return { inst, pct: pct(inst.precio, c.precio_hoy_usd) };
+}
+// ¿el mes de los datos cae dentro de la cosecha de ese cultivo?
+function enCosecha(key) {
+  const m = (idxDatos % 12) + 1;
+  return (CALENDARIO[key] ? CALENDARIO[key].ventanas : []).some(v => (v.ini <= v.fin ? m >= v.ini && m <= v.fin : m >= v.ini || m <= v.fin));
+}
+
 // ---- motor de recomendación (reglas simples) ----
 function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   const restante = disponible - comprometido;
@@ -1182,14 +1211,8 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     return cerrar();
   }
 
-  if (estado === "campo") {
-    reasons.push("Como todavía no cosechaste, el contado no está disponible — la forma de asegurar precio ahora es un futuro de cosecha nueva (o un forward que negocies con tu comprador).");
-    if (vent && (c.futuros.length || (c.forwards || []).length)) {
-      const fa = instrumentos.find(i => i.tipo === "forward-antes");
-      if (fa && !instrumentos.some(i => i.tipo === "futuro-antes")) reasons.push(`Elegiste cosechar en ${vent.nombre.toLowerCase()} (${textoVentana(vent)}): los forwards con entrega anterior no los podés cumplir.`);
-      const antes = instrumentos.find(i => i.tipo === "futuro-antes");
-      if (antes) reasons.push(`Elegiste cosechar en ${vent.nombre.toLowerCase()} (${textoVentana(vent)}): los futuros anteriores vencen antes de que tengas la mercadería, así que no se usan para cubrir.`);
-    }
+  if (estado === "campo" && (!elegido || elegido.estimativo)) {
+    reasons.push("Como todavía no cosechaste, no podés vender contado: la forma de asegurar precio es un forward o un futuro de cosecha nueva.");
   }
 
   // sin precio firme para operar (girasol u otro cultivo sin cotización)
@@ -1204,7 +1227,7 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
       reasons.push(`No hay cotización pública en US$ para fijar el precio de ${c.nombre.toLowerCase()} hoy.`);
       reasons.push("Consultá un forward con tu comprador o corredor.");
     }
-    const cp0 = textoCapacidadPago(c);
+    const cp0 = c.estimativo ? null : textoCapacidadPago(c);
     if (cp0) reasons.push(cp0);
     const sg = (MUNDO.sesgo || {})[c.key];
     if (sg) reasons.push(`Lo que mueve el mercado viene con ${{ bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin dirección clara" }[sg.dir] || "un panorama sin dirección clara"} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${sg.porque}. Tenelo en cuenta al pedir precio.`);
@@ -1230,13 +1253,13 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
   if (!action && estado === "campo" && (elegido.tipo === "futuro" || elegido.tipo === "forward")) {
     const s = (MUNDO.sesgo || {})[c.key];
     const dirTxt = { bajista: "presión bajista", alcista: "señales alcistas", neutral: "un panorama sin una dirección clara" };
-    reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar US$ ${fmt(elegido.precio)}/t.`);
+    const viejo = elegido.tipo === "futuro" && futurosViejos();
+    reasons.push(`Para tu cosecha la referencia no es la pizarra de hoy sino el ${elegido.nombre.toLowerCase()}: hoy podés fijar alrededor de US$ ${fmt(elegido.precio)}/t${viejo ? ` (es el cierre del ${fmtFecha(FECHA_FUTUROS_ISO)}, el último disponible: confirmá el precio actual con tu corredor)` : ""}.`);
     const lm = lecturaMaximo(c, elegido);
     if (lm) {
       if (lm.alerta) {
         alerta = lm.alerta;
-        reasons.push(`El ${elegido.posicion} llegó a US$ ${fmt(lm.max.usd)}/t el ${fmtFecha(lm.max.f)} y hoy está ${fmt(Math.abs(lm.caida), 1)}% abajo (US$ ${fmt(lm.max.usd - elegido.precio)}/t menos), según los cierres que registra la app desde el ${fmtFecha(lm.desde)}.`);
-        reasons.push(`Nivel de alerta: si el ${elegido.posicion} vuelve a US$ ${fmt(lm.alerta)}/t (recupera la mitad de lo que perdió), es una buena oportunidad para cubrir otra parte. Cargalo como precio objetivo para que la app te lo marque.`);
+        reasons.push(`El ${elegido.posicion} llegó a US$ ${fmt(lm.max.usd)}/t el ${fmtFecha(lm.max.f)} y hoy está ${fmt(Math.abs(lm.caida), 1)}% abajo. Si vuelve a US$ ${fmt(lm.alerta)}/t (recupera la mitad de lo que perdió), es buena oportunidad para cubrir otra parte: cargalo como precio objetivo y la app te lo marca.`);
       } else {
         reasons.push(`El ${elegido.posicion} está en su máximo desde el ${fmtFecha(lm.desde)} (US$ ${fmt(lm.max.usd)}/t el ${fmtFecha(lm.max.f)}): es un buen nivel para cubrir.`);
       }
@@ -1249,21 +1272,20 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
       const base = pctVendido < 20 ? 30 : 20;
       pctSugerido = s && s.dir === "alcista" ? 15 : (s && s.dir === "neutral" ? 20 : base);
       if (s) {
-        reasons.push(`Lo que mueve el mercado viene con ${dirTxt[s.dir] || dirTxt.neutral} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${s.porque}.`);
-        if (s.dir === "bajista") reasons.push("Con esa presión, el precio de cosecha suele aflojar cuando entra la mercadería: conviene asegurar una parte ahora en lugar de esperar a tener el grano.");
-        else if (s.dir === "alcista") reasons.push("Si esas señales se confirman el precio puede mejorar, por eso alcanza con cubrir una parte chica ahora y dejar el resto para más adelante.");
-      }
-      if (c.ref) {
-        const diff = pct(c.precio_hoy_usd, c.ref.usd);
-        if (diff < -3) reasons.push(`Además, el disponible viene cediendo (${fmtPct(diff)} vs. ${textoReferencia(c)}): si la baja sigue, puede arrastrar también al precio de cosecha.`);
-        else if (diff > 3) reasons.push(`El disponible viene firme (${fmtPct(diff)} vs. ${textoReferencia(c)}), un buen momento para fijar una parte.`);
+        const extra = s.dir === "bajista" ? " Con esa presión, conviene asegurar una parte ahora en lugar de esperar a tener el grano."
+          : (s.dir === "alcista" ? " Si se confirma, el precio puede mejorar: alcanza con cubrir una parte chica ahora." : "");
+        reasons.push(`Lo que mueve el mercado viene con ${dirTxt[s.dir] || dirTxt.neutral} para ${c.key === "soja" ? "la" : "el"} ${c.nombre.toLowerCase()}: ${s.porque}.${extra}`);
       }
       if (elegido.tipo === "forward") {
-        reasons.push(`No hay futuro con operaciones para ${c.nombre.toLowerCase()} en A3, por eso la referencia es el forward: es un contrato directo con el comprador (${FUENTE_FORWARDS}). Antes de cerrar, confirmá calidad, lugar de entrega, flete y forma de pago.`);
+        reasons.push(`Cubrí de a partes: el resto lo decidís más adelante con nuevos datos. No hay futuro con operaciones para ${c.nombre.toLowerCase()} en A3, así que la referencia es el forward, un contrato directo con el comprador: antes de cerrar, confirmá calidad, lugar de entrega, flete y forma de pago.`);
         if (c.forwards_nota) reasons.push(`Además: ${c.forwards_nota}.`);
-        reasons.push("Cubrí de a partes: el resto lo decidís más adelante con nuevos datos.");
       } else {
         reasons.push(`Cubrí de a partes: el resto lo decidís más adelante con nuevos datos. Si querés un piso sin resignar una suba, preguntale a tu corredor por una opción put ${elegido.posicion}.`);
+      }
+      if (c.ref && !c.estimativo) {
+        const diff = pct(c.precio_hoy_usd, c.ref.usd);
+        if (diff < -3) reasons.push(`El disponible viene cediendo (${fmtPct(diff)} vs. el promedio del último mes): si la baja sigue, puede arrastrar también al precio de cosecha.`);
+        else if (diff > 3) reasons.push(`El disponible viene firme (${fmtPct(diff)} vs. el promedio del último mes), un buen momento para fijar una parte.`);
       }
     }
   }
@@ -1279,17 +1301,22 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
       if (diff > 3) {
         action = "vender";
         pctSugerido = pctVendido < 20 ? 30 : 20;
-        reasons.push(`El precio está ${fmt(diff, 1)}% arriba de ${cmp} — buen momento para asegurar parte de la cosecha.`);
-        reasons.push(`Llevás comprometido el ${fmt(pctVendido, 0)}% de lo disponible, así que todavía tenés margen para vender sin quedarte sin stock.`);
+        reasons.push(`El precio está ${fmt(diff, 1)}% arriba ${deRef(c)}: buen momento para asegurar parte de la cosecha.`);
+        reasons.push(pctVendido < 1
+          ? "Todavía no vendiste nada, así que tenés margen para vender una parte sin quedarte sin stock."
+          : `Llevás comprometido el ${fmt(pctVendido, 0)}% de lo disponible, así que todavía tenés margen para vender sin quedarte sin stock.`);
       } else if (diff < -3) {
         action = "esperar";
-        reasons.push(`El precio está ${fmt(Math.abs(diff), 1)}% por debajo de ${cmp} — no parece el mejor momento para soltar el resto.`);
+        if (enCosecha(c.key)) reasons.push(`El precio está ${fmt(Math.abs(diff), 1)}% abajo ${deRef(c)}, pero es lo normal en esta época: estamos en plena cosecha de ${c.nombre.toLowerCase()} y el precio afloja cuando entra la mercadería. Suele ser el momento del año con precios más bajos para vender.`);
+        else reasons.push(`El precio está ${fmt(Math.abs(diff), 1)}% por debajo ${deRef(c)}: no parece el mejor momento para soltar el resto.`);
       } else {
         action = pctVendido < 30 ? "vender" : "esperar";
-        reasons.push(`El precio está estable (${fmtPct(diff)} vs. ${cmp}).`);
+        reasons.push(`El precio está estable (${fmtPct(diff)} vs. ${c.ref.n === 1 ? cmp : "el promedio del último mes"}).`);
         if (action === "vender") {
           pctSugerido = 20;
-          reasons.push(`Como llevás vendido solo el ${fmt(pctVendido, 0)}%, conviene ir asegurando de a poco.`);
+          reasons.push(pctVendido < 1
+            ? "Como todavía no vendiste nada, conviene empezar a asegurar de a poco."
+            : `Como llevás vendido solo el ${fmt(pctVendido, 0)}%, conviene ir asegurando de a poco.`);
         }
       }
     } else {
@@ -1308,33 +1335,36 @@ function recomendar(c, disponible, comprometido, objetivo, estado, vent) {
     const dif = pct(elegido.precio, c.precio_hoy_usd);
     const primero = viables.find(i => i.tipo === "futuro" && i.despuesCosecha);
     const cosechaTxt = vent ? ` (${vent.nombre.toLowerCase()})` : "";
+    const cotiza = dif < 0
+      ? `cotiza ${fmt(Math.abs(dif), 1)}% por debajo del contado de hoy (el mercado paga más por entrega inmediata que por cosecha nueva)`
+      : `cotiza ${fmtPct(dif)} sobre el contado de hoy`;
     if (!primero) {
-      reasons.push(`Ningún vencimiento llega hasta el final de tu cosecha${cosechaTxt}: el más lejano es el ${elegido.nombre.toLowerCase()}, así que vas a tener que renovar la cobertura.`);
+      reasons.push(`Ningún vencimiento llega hasta el final de tu cosecha${cosechaTxt}: el más lejano es el ${elegido.posicion} (${cotiza}), así que vas a tener que renovar la cobertura.`);
     } else if (elegido === primero) {
-      reasons.push(`El ${elegido.nombre.toLowerCase()} es el primer vencimiento que llega hasta el final de tu cosecha${cosechaTxt}: así el contrato no vence antes de que tengas la mercadería.`);
+      reasons.push(`Elegimos el ${elegido.posicion} porque es el primer vencimiento que cubre toda tu cosecha${cosechaTxt}, y los anteriores vencen antes de que tengas la mercadería; ${cotiza}.`);
     } else {
-      reasons.push(`El ${elegido.nombre.toLowerCase()} llega hasta el final de tu cosecha${cosechaTxt} y alcanza tu objetivo; el primer vencimiento que la cubre es el ${primero.nombre.toLowerCase()} (US$ ${fmt(primero.precio)}/t).`);
-    }
-    reasons.push(dif < 0
-      ? `Cotiza ${fmt(Math.abs(dif), 1)}% por debajo del contado de hoy: el mercado paga más por entrega inmediata que por cosecha nueva. Es el precio al que podés asegurar hoy tu cosecha.`
-      : `Cotiza ${fmtPct(dif)} sobre el contado de hoy.`);
-  }
-
-  // 4) mercadería ya cosechada: lectura honesta de la curva (premio por esperar, no "mejor precio")
-  if (action === "vender" && elegido.tipo === "contado") {
-    const futs = viables.filter(i => i.tipo === "futuro");
-    const mejorFut = futs.length ? futs.reduce((a, b) => (b.precio > a.precio ? b : a)) : null;
-    if (mejorFut && mejorFut.precio > elegido.precio) {
-      let t = `Si podés esperar, el ${mejorFut.nombre.toLowerCase()} paga US$ ${fmt(mejorFut.precio - elegido.precio)}/t más (${fmtPct(pct(mejorFut.precio, elegido.precio))}) que el contado. Esa diferencia es lo que el mercado paga por esperar: comparala con tu costo de almacenaje y financiación antes de elegirlo.`;
-      const bajo = futs.find(i => i.idx > mejorFut.idx && i.precio < elegido.precio);
-      if (bajo) t += ` Desde ${bajo.posicion} los vencimientos cotizan por debajo del contado: esperar más allá de ${mejorFut.posicion} no tiene premio.`;
-      reasons.push(t);
-    } else if (futs.length) {
-      reasons.push("El mercado a futuro no paga más que el contado de hoy: no hay premio por esperar.");
+      reasons.push(`El ${elegido.posicion} cubre tu cosecha${cosechaTxt} y alcanza tu objetivo (${cotiza}); el primer vencimiento que la cubre es el ${primero.posicion} (US$ ${fmt(primero.precio)}/t).`);
     }
   }
 
-  if (estado === "cosechada") {
+  // 4) mercadería ya cosechada: cuánto paga el mercado por guardar (próximos 6 meses)
+  if (estado === "cosechada" && (action === "vender" || action === "esperar") && !c.estimativo) {
+    const pr = premioEspera(c, viables);
+    if (pr) {
+      const base = `el ${pr.inst.nombre.toLowerCase()}${pr.inst.tipo === "futuro" ? notaCierre() : ""} paga US$ ${fmt(pr.inst.precio - c.precio_hoy_usd)}/t más (${fmtPct(pr.pct)}) que el contado`;
+      if (pr.pct >= 3) {
+        reasons.splice(action === "esperar" ? 1 : reasons.length, 0, action === "esperar"
+          ? `Por qué conviene guardar: ${base}. Si podés almacenar, podés fijar hoy ese precio para entregar más adelante; comparalo con tu costo de almacenaje y financiación.`
+          : `Si podés esperar, ${base}. Comparalo con tu costo de almacenaje y financiación antes de elegirlo.`);
+      } else {
+        reasons.push(`El mercado paga poco por guardar: lo mejor de los próximos meses es que ${base}, que difícilmente cubra almacenaje y financiación.`);
+      }
+    } else if (viables.some(i => i.tipo === "futuro" || i.tipo === "forward")) {
+      reasons.push("El mercado a futuro no paga más que el contado de hoy: no hay premio por guardar.");
+    }
+  }
+
+  if (estado === "cosechada" && !c.estimativo) {
     const cp = textoCapacidadPago(c);
     if (cp) reasons.push(cp);
   }
@@ -1401,11 +1431,20 @@ document.getElementById("calcBtn").addEventListener("click", () => {
 
   const reasonsEl = document.getElementById("reasons");
   reasonsEl.innerHTML = "";
-  r.reasons.forEach(txt => {
+  const VISIBLES = 4;
+  r.reasons.forEach((txt, i) => {
     const li = document.createElement("li");
     li.textContent = txt;
+    if (i >= VISIBLES) li.className = "extra";
     reasonsEl.appendChild(li);
   });
+  reasonsEl.classList.remove("abierto");
+  const masBtn = document.getElementById("reasonsMas");
+  const extras = r.reasons.length - VISIBLES;
+  const masTxt = `Ver ${extras} detalle${extras === 1 ? "" : "s"} más`;
+  masBtn.hidden = extras <= 0;
+  masBtn.textContent = masTxt;
+  masBtn.onclick = () => { masBtn.textContent = reasonsEl.classList.toggle("abierto") ? "Ver menos" : masTxt; };
 
   const compareEl = document.getElementById("compareTable");
   const rows = r.instrumentos.map(i => {
@@ -1518,7 +1557,10 @@ const NOMBRE_PUERTO = { rosario: "Rosario", bahia: "Bahía Blanca", quequen: "Qu
   }).join("");
   el.innerHTML = `<p class="puertos-t">PIZARRA POR PUERTO · US$/t</p>
     <table><tr><th>Grano</th><th>Rosario<br>${fmtFecha(FECHA_DATOS)}</th><th>Bahía Blanca<br>${fmtFecha(OTROS_PUERTOS.fecha)}</th><th>Quequén<br>${fmtFecha(OTROS_PUERTOS.fecha)}</th></tr>${filas}</table>
-    <p class="puertos-f">s/c = sin cotización ese día. Bahía Blanca y Quequén: ${OTROS_PUERTOS.fuente}.</p>`;
+    <p class="puertos-f">s/c = sin cotización ese día. Bahía Blanca y Quequén: ${OTROS_PUERTOS.fuente}.${(() => {
+      const b = (OTROS_PUERTOS.precios.trigo || {}).bahia, r = MERCADO.trigo ? MERCADO.trigo.precio_hoy_usd : null;
+      return b && r && b > r * 1.1 ? " Ojo con el trigo: en el sur la cosecha arranca más tarde y la pizarra de Bahía Blanca puede corresponder a otra condición de entrega o a mercadería de la campaña pasada; confirmalo antes de compararla con Rosario." : "";
+    })()}</p>`;
 })();
 
 const NETO_KEY = "vendo-o-guardo:neto";
