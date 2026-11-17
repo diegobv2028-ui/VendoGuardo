@@ -482,6 +482,23 @@
   .puertos .sc { color: var(--ink-soft); font-style: italic; font-size: 0.8rem; }
   .puertos-f { font-size: 0.72rem; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.45; }
 
+  /* ---------- quién compra y a cuánto (plegado) ---------- */
+  details.compradores { margin: -14px 0 30px; border: 1px solid var(--border); background: var(--bg-panel); border-radius: 4px; padding: 12px 14px; }
+  details.compradores summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  details.compradores summary::-webkit-details-marker { display: none; }
+  .comp-t { font-size: 0.78rem; font-weight: 600; color: var(--ink-soft); letter-spacing: 0.02em; }
+  .comp-mas { font-size: 0.82rem; font-weight: 600; color: var(--green); }
+  details.compradores[open] .comp-mas .abrir, details.compradores:not([open]) .comp-mas .cerrar { display: none; }
+  .comp-chips { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 8px; }
+  .comp-chips button { font-family: var(--font-body); font-size: 0.8rem; padding: 5px 12px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg); color: var(--ink); cursor: pointer; }
+  .comp-chips button[aria-pressed="true"] { background: var(--green); color: var(--bg-panel); border-color: var(--green); }
+  .compradores table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+  .compradores td { padding: 6px 4px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  .compradores td.p { text-align: right; font-weight: 600; white-space: nowrap; }
+  .compradores td small { display: block; font-size: 0.74rem; color: var(--ink-soft); }
+  .compradores tr:last-child td { border-bottom: none; }
+  .comp-f { font-size: 0.72rem; color: var(--ink-soft); margin: 8px 0 0; line-height: 1.45; }
+
   /* ---------- precio neto en tu campo ---------- */
   details.neto-form { margin-top: 18px; border-top: 1px solid var(--border); padding-top: 14px; }
   details.neto-form summary { font-size: 0.88rem; font-weight: 600; cursor: pointer; color: var(--green); }
@@ -516,6 +533,12 @@
   <div class="pizarra" id="pizarra"></div>
   <p class="pizarra-nota" id="pizarraNota"></p>
   <div class="puertos" id="otrosPuertos"></div>
+  <details class="compradores" id="compradores" hidden>
+    <summary><span class="comp-t">¿QUIÉN COMPRA Y A CUÁNTO?</span><span class="comp-mas"><span class="abrir">Ver más ▾</span><span class="cerrar">Ver menos ▴</span></span></summary>
+    <div class="comp-chips" id="compChips"></div>
+    <table id="compTabla"></table>
+    <p class="comp-f" id="compFuente"></p>
+  </details>
 
   <div class="panels">
     <section class="panel">
@@ -801,6 +824,52 @@ const FOB_OFICIAL = {
   usd: { soja: 482, maiz: 204, trigo: 221, girasol: 606 },
 };
 const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
+
+/* Quién compra y a cuánto: ofertas abiertas del mercado físico de Rosario por tipo de comprador,
+   del boletín diario de la Bolsa de Comercio de Rosario (sección "Precios del Mercado Físico de Granos").
+   Máximo 9 filas por grano, en orden de entrega. Cada fila: { entrega, quien ("Exportación · lugar",
+   "Fábrica · lugar" o "Molino · lugar"), calidad ("" si no hay), moneda: "usd" | "ars", precio }.
+   Un grano sin ofertas ese día queda []. */
+const COMPRADORES = {
+  fecha: "2026-11-16",
+  fuente: "Bolsa de Comercio de Rosario, boletín diario del 16-nov-2026",
+  ofertas: {
+    soja: [
+      { entrega: "Disponible", quien: "Fábrica · San Lorenzo y Rosario", calidad: "", moneda: "ars", precio: 545000 },
+      { entrega: "Disponible", quien: "Fábrica · San Lorenzo y Gral. Lagos", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
+      { entrega: "Fijaciones", quien: "Fábrica · Gran Rosario", calidad: "", moneda: "ars", precio: 550000 },
+      { entrega: "Diciembre 2026", quien: "Fábrica · Timbúes y San Lorenzo", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
+      { entrega: "Enero 2027", quien: "Fábrica · San Martín y Timbúes", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
+    ],
+    maiz: [
+      { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 173 },
+      { entrega: "Noviembre 2026", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 173 },
+      { entrega: "Diciembre 2026", quien: "Exportación · Punta Alvear", calidad: "grado 2", moneda: "usd", precio: 182 },
+      { entrega: "Diciembre 2026", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 177 },
+      { entrega: "Enero y febrero 2027", quien: "Exportación · San Martín, Timbúes, Gral. Lagos y Punta Alvear", calidad: "grado 2", moneda: "usd", precio: 185 },
+      { entrega: "Marzo a junio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 180 },
+      { entrega: "Julio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 178 },
+    ],
+    trigo: [
+      { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "proteína mín. 11%", moneda: "usd", precio: 211 },
+      { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "proteína mín. 10,5%", moneda: "usd", precio: 206 },
+      { entrega: "Disponible", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "proteína mín. 10%", moneda: "usd", precio: 200 },
+      { entrega: "Disponible", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "condición cámara", moneda: "usd", precio: 180 },
+      { entrega: "Noviembre y diciembre 2026", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2, no OGM", moneda: "usd", precio: 180 },
+      { entrega: "Diciembre 2026", quien: "Exportación · San Lorenzo", calidad: "condición cámara", moneda: "usd", precio: 185 },
+      { entrega: "Enero 2027", quien: "Exportación · Timbúes, Gral. Lagos y San Lorenzo", calidad: "grado 2 o condición cámara", moneda: "usd", precio: 200 },
+      { entrega: "Febrero 2027", quien: "Exportación · San Martín", calidad: "condición cámara", moneda: "usd", precio: 198 },
+      { entrega: "Marzo 2027", quien: "Exportación · San Martín", calidad: "condición cámara", moneda: "usd", precio: 200 },
+    ],
+    girasol: [
+      { entrega: "15-dic a 15-ene", quien: "Fábrica · Timbúes", calidad: "", moneda: "usd", precio: 440 },
+      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "", moneda: "usd", precio: 440 },
+      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "alto oleico", moneda: "usd", precio: 460 },
+      { entrega: "Diciembre 2026 a mayo 2027", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "usd", precio: 440 },
+      { entrega: "Enero y febrero 2027", quien: "Fábrica · Timbúes", calidad: "", moneda: "usd", precio: 440 },
+    ],
+  },
+};
 
 /* Lo que mueve el mercado: resumen semanal de hechos del mundo (máx. 5 líneas cortas).
    Cada línea: bandera, texto de una oración y fuente con fecha. Solo hechos con cifra y fuente. */
@@ -1576,6 +1645,35 @@ const NOMBRE_PUERTO = { rosario: "Rosario", bahia: "Bahía Blanca", quequen: "Qu
       const b = (OTROS_PUERTOS.precios.trigo || {}).bahia, r = MERCADO.trigo ? MERCADO.trigo.precio_hoy_usd : null;
       return b && r && b > r * 1.1 ? " Ojo con el trigo: en el sur la cosecha arranca más tarde y la pizarra de Bahía Blanca puede corresponder a otra condición de entrega o a mercadería de la campaña pasada; confirmalo antes de compararla con Rosario." : "";
     })()}</p>`;
+})();
+
+// ===== Quién compra y a cuánto (plegado: solo se abre si al productor le interesa) =====
+(function mostrarCompradores() {
+  const box = document.getElementById("compradores");
+  if (!box || typeof COMPRADORES === "undefined" || !COMPRADORES.ofertas) return;
+  const keys = Object.keys(MERCADO).filter(k => (COMPRADORES.ofertas[k] || []).length);
+  if (!keys.length) return;
+  box.hidden = false;
+  const esc = t => String(t).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+  let actual = keys.includes(cultivoSelect.value) ? cultivoSelect.value : keys[0];
+  function pintar() {
+    document.getElementById("compChips").innerHTML = keys.map(k =>
+      `<button type="button" data-k="${k}" aria-pressed="${k === actual}">${esc(MERCADO[k].nombre)}</button>`).join("");
+    const filas = COMPRADORES.ofertas[actual];
+    document.getElementById("compTabla").innerHTML = filas.map(o =>
+      `<tr><td>${esc(o.entrega)}<small>${esc(o.quien)}${o.calidad ? " · " + esc(o.calidad) : ""}</small></td>` +
+      `<td class="p">${o.moneda === "ars" ? "$ " + fmt(o.precio, 0) : "US$ " + fmt(o.precio, 0)}</td></tr>`).join("");
+    const pesos = filas.some(o => o.moneda === "ars");
+    document.getElementById("compFuente").textContent =
+      `Ofertas abiertas de exportadores y fábricas en el Gran Rosario, por tonelada, puesto en puerto y sin descontar flete ni comisión${pesos ? " (las de $ son en pesos)" : ""}. ${COMPRADORES.fuente}.`;
+  }
+  document.getElementById("compChips").addEventListener("click", ev => {
+    const b = ev.target.closest("button[data-k]");
+    if (b) { actual = b.dataset.k; pintar(); }
+  });
+  cultivoSelect.addEventListener("change", () => { if (keys.includes(cultivoSelect.value)) { actual = cultivoSelect.value; pintar(); } });
+  box.addEventListener("toggle", () => { if (box.open && typeof registrarEvento === "function") registrarEvento("ver-compradores", "Abrió quién compra y a cuánto"); });
+  pintar();
 })();
 
 const NETO_KEY = "vendo-o-guardo:neto";
