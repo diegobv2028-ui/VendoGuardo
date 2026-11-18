@@ -704,7 +704,7 @@
    del 16-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
    operaciones: la referencia de cosecha nueva es el forward.
    ===================================================================== */
-const ACTUALIZADO = "17 de noviembre de 2026 — contado: pizarra CAC-BCR del 16-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 16-nov; forwards: mercado físico de Rosario (BCR) del 16-nov; FOB oficial del 16-nov; Bahía Blanca y Quequén: pizarra del 13-nov.";
+const ACTUALIZADO = "18 de noviembre de 2026 — contado: pizarra CAC-BCR del 16-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 16-nov; forwards: mercado físico de Rosario (BCR) del 16-nov; FOB oficial del 17-nov; Bahía Blanca y Quequén: pizarra del 16-nov. Al actualizar todavía no estaba publicada la pizarra del 17-nov.";
 const FECHA_DATOS = "2026-11-16";   // fecha de la pizarra (mes de referencia del calendario)
 const FUENTE_FUTUROS = "A3, cierre 16-nov-2026";
 const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 16-nov-2026";
@@ -804,13 +804,13 @@ const MERCADO = {
 /* Otros puertos: pizarra de Bahía Blanca y Quequén en US$/t (null = sin cotización),
    según la Bolsa de Cereales y Productos de Bahía Blanca. Puede tener otra fecha que Rosario. */
 const OTROS_PUERTOS = {
-  fecha: "2026-11-13",
-  fuente: "Bolsa de Cereales y Productos de Bahía Blanca, pizarra 13-nov-2026",
+  fecha: "2026-11-16",
+  fuente: "Bolsa de Cereales y Productos de Bahía Blanca, pizarra 16-nov-2026",
   precios: {
     soja:    { bahia: null, quequen: null },
-    maiz:    { bahia: null, quequen: 175 },
-    trigo:   { bahia: null, quequen: null },
-    girasol: { bahia: 470,  quequen: 470 },
+    maiz:    { bahia: 179,  quequen: null },
+    trigo:   { bahia: 220,  quequen: null },
+    girasol: { bahia: null, quequen: null },
   },
 };
 const TC_BNA = 1542.00;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
@@ -819,9 +819,9 @@ const TC_BNA = 1542.00;   // dólar BNA comprador que usa la pizarra CAC del dí
    www.magyp.gob.ar/mercadosagropecuarios/precios.php) menos retenciones.
    DEX = alícuota de derechos de exportación en % (Decreto 423/2026; revisar cuando cambie). */
 const FOB_OFICIAL = {
-  fecha: "2026-11-16",
-  fuente: "Secretaría de Agricultura, FOB oficial 16-nov-2026",
-  usd: { soja: 482, maiz: 204, trigo: 221, girasol: 606 },
+  fecha: "2026-11-17",
+  fuente: "Secretaría de Agricultura, FOB oficial 17-nov-2026",
+  usd: { soja: 482, maiz: 203, trigo: 218, girasol: 606 },
 };
 const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
 
