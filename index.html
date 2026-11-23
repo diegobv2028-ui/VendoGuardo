@@ -694,20 +694,20 @@
       mercado local). Solo posiciones con precio en dólares; si un cultivo no tiene
       ofertas abiertas, dejar forwards: []. Actualizar FUENTE_FORWARDS.
    Fuentes: contado = Cámara Arbitral de Cereales (BCR),
-   www.cac.bcr.com.ar/es/precios-de-pizarra — pizarra del 18-nov-2026
-   (TC BNA comprador $1.550,50).
-   Futuros = A3 Mercados (Matba-Rofex), precios de ajuste del cierre del 18-nov-2026.
+   www.cac.bcr.com.ar/es/precios-de-pizarra — pizarra del 19-nov-2026
+   (TC BNA comprador $1.556,00).
+   Futuros = A3 Mercados (Matba-Rofex), precios de ajuste del cierre del 20-nov-2026.
    Calendario: rangos GENERALES para Argentina (AgroSpray, Infoagro, Climate
    FieldView). No encontré fechas por zona en fuentes públicas: la app le
    pregunta al productor cuándo espera cosechar.
-   Forwards = ofertas abiertas del mercado físico de Rosario (comentario diario BCR)
-   del 18-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
+   Forwards = ofertas abiertas del mercado físico de Rosario (BCR)
+   del 20-nov-2026. Girasol: pizarra ESTIMATIVA (E) y el futuro de A3 casi sin
    operaciones: la referencia de cosecha nueva es el forward.
    ===================================================================== */
-const ACTUALIZADO = "20 de noviembre de 2026 — contado: pizarra CAC-BCR del 18-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 18-nov; forwards: mercado físico de Rosario (BCR) del 18-nov; FOB oficial del 19-nov; Bahía Blanca y Quequén: pizarra del 16-nov (sin dato nuevo). Al actualizar todavía no estaba publicada la pizarra del 19-nov.";
-const FECHA_DATOS = "2026-11-18";   // fecha de la pizarra (mes de referencia del calendario)
-const FUENTE_FUTUROS = "A3, cierre 18-nov-2026";
-const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 18-nov-2026";
+const ACTUALIZADO = "23 de noviembre de 2026 — contado: pizarra CAC-BCR del 19-nov (girasol con valor estimativo); futuros: A3 Mercados (Matba-Rofex), cierre del 20-nov; forwards: mercado físico de Rosario (BCR) del 20-nov; FOB oficial del 19-nov (sin dato nuevo); Bahía Blanca y Quequén: pizarra del 16-nov (sin dato nuevo). Al actualizar todavía no estaba publicada la pizarra del 20-nov.";
+const FECHA_DATOS = "2026-11-19";   // fecha de la pizarra (mes de referencia del calendario)
+const FUENTE_FUTUROS = "A3, cierre 20-nov-2026";
+const FUENTE_FORWARDS = "BCR, mercado físico de Rosario, 20-nov-2026";
 const MAX_MESES = 12;               // no se muestran futuros a más de 12 meses
 
 const WASDE = "El USDA publica el informe WASDE todos los meses, alrededor del día 10, y puede mover el precio.";
@@ -716,61 +716,61 @@ const MERCADO = {
   soja: {
     nombre: "Soja",
     estimativo: false,
-    historico: [ { f: "2026-10-19", usd: 364.24 }, { f: "2026-10-20", usd: 362.80 }, { f: "2026-10-21", usd: 362.56 }, { f: "2026-10-22", usd: 362.08 }, { f: "2026-10-23", usd: 365.01 }, { f: "2026-10-26", usd: 362.27 }, { f: "2026-10-27", usd: 359.71 }, { f: "2026-10-29", usd: 357.52 }, { f: "2026-10-30", usd: 356.72 }, { f: "2026-11-02", usd: 352.75 }, { f: "2026-11-03", usd: 350.52 }, { f: "2026-11-05", usd: 348.19 }, { f: "2026-11-12", usd: 351.45 }, { f: "2026-11-13", usd: 355.16 }, { f: "2026-11-16", usd: 353.44 }, { f: "2026-11-17", usd: 356.45 }, { f: "2026-11-18", usd: 354.72 } ],
-    anio_anterior_usd: 349.42,
-    anio_anterior_fecha: "2025-11-18",
+    historico: [ { f: "2026-10-20", usd: 362.80 }, { f: "2026-10-21", usd: 362.56 }, { f: "2026-10-22", usd: 362.08 }, { f: "2026-10-23", usd: 365.01 }, { f: "2026-10-26", usd: 362.27 }, { f: "2026-10-27", usd: 359.71 }, { f: "2026-10-29", usd: 357.52 }, { f: "2026-10-30", usd: 356.72 }, { f: "2026-11-02", usd: 352.75 }, { f: "2026-11-03", usd: 350.52 }, { f: "2026-11-05", usd: 348.19 }, { f: "2026-11-12", usd: 351.45 }, { f: "2026-11-13", usd: 355.16 }, { f: "2026-11-16", usd: 353.44 }, { f: "2026-11-17", usd: 356.45 }, { f: "2026-11-18", usd: 354.72 }, { f: "2026-11-19", usd: 353.47 } ],
+    anio_anterior_usd: 342.25,
+    anio_anterior_fecha: "2025-11-19",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 18-nov-2026",
+    contado_fuente: "CAC-BCR, pizarra 19-nov-2026",
     futuros: [
-      { posicion: "nov-26", usd: 356 }, { posicion: "ene-27", usd: 358.2 }, { posicion: "abr-27", usd: 328 },
-      { posicion: "may-27", usd: 340.5 }, { posicion: "jul-27", usd: 350.5 }, { posicion: "sep-27", usd: 357 },
+      { posicion: "nov-26", usd: 360.1 }, { posicion: "ene-27", usd: 360.2 }, { posicion: "abr-27", usd: 328 },
+      { posicion: "may-27", usd: 342.5 }, { posicion: "jul-27", usd: 352.5 }, { posicion: "sep-27", usd: 357 },
       { posicion: "nov-27", usd: 363 },
     ],
     ref_nueva: "may-27",
-    forwards: [],   // 18-nov: sin ofertas en US$; solo en pesos: disponible $545.000 a $555.000, contractual $550.000, fijaciones $545.000 a $555.000, diciembre $550.000 a $555.000 y enero $545.000 (EUDR)
+    forwards: [],   // 20-nov: sin ofertas en US$ por mes; en pesos: disponible $555.000 a $565.000, contractual $560.000 (EUDR), fijaciones $560.000 a $565.000, diciembre $560.000 a $565.000, diciembre/enero y enero $560.000 (EUDR); en US$ solo 15-dic a 15-ene US$ 357 bajo condición Visec/2BSvs NUTs
     futuros_hist: {
-      "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 }, { f: "2026-10-20", usd: 353.3 }, { f: "2026-10-22", usd: 353.8 }, { f: "2026-10-23", usd: 355.8 }, { f: "2026-11-05", usd: 339 }, { f: "2026-11-11", usd: 345.5 }, { f: "2026-11-16", usd: 344.7 }, { f: "2026-11-18", usd: 340.5 } ],
-      "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 }, { f: "2026-10-20", usd: 360.6 }, { f: "2026-10-22", usd: 361.3 }, { f: "2026-10-23", usd: 363.5 }, { f: "2026-11-05", usd: 348.7 }, { f: "2026-11-11", usd: 355 }, { f: "2026-11-16", usd: 354.4 }, { f: "2026-11-18", usd: 350.5 } ],
+      "may-27": [ { f: "2026-10-05", usd: 356.8 }, { f: "2026-10-07", usd: 359.2 }, { f: "2026-10-08", usd: 358.8 }, { f: "2026-10-13", usd: 358.8 }, { f: "2026-10-14", usd: 358.1 }, { f: "2026-10-16", usd: 355 }, { f: "2026-10-20", usd: 353.3 }, { f: "2026-10-22", usd: 353.8 }, { f: "2026-10-23", usd: 355.8 }, { f: "2026-11-05", usd: 339 }, { f: "2026-11-11", usd: 345.5 }, { f: "2026-11-16", usd: 344.7 }, { f: "2026-11-18", usd: 340.5 }, { f: "2026-11-20", usd: 342.5 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 363.4 }, { f: "2026-10-07", usd: 366.3 }, { f: "2026-10-08", usd: 366.2 }, { f: "2026-10-13", usd: 366.5 }, { f: "2026-10-14", usd: 366 }, { f: "2026-10-16", usd: 362.5 }, { f: "2026-10-20", usd: 360.6 }, { f: "2026-10-22", usd: 361.3 }, { f: "2026-10-23", usd: 363.5 }, { f: "2026-11-05", usd: 348.7 }, { f: "2026-11-11", usd: 355 }, { f: "2026-11-16", usd: 354.4 }, { f: "2026-11-18", usd: 350.5 }, { f: "2026-11-20", usd: 352.5 } ],
     },
     evento_proximo: WASDE,
   },
   maiz: {
     nombre: "Maíz",
     estimativo: false,
-    historico: [ { f: "2026-10-19", usd: 185.95 }, { f: "2026-10-20", usd: 184.04 }, { f: "2026-10-21", usd: 183.17 }, { f: "2026-10-22", usd: 183.02 }, { f: "2026-10-23", usd: 183 }, { f: "2026-10-26", usd: 183.42 }, { f: "2026-10-27", usd: 183.45 }, { f: "2026-10-29", usd: 180 }, { f: "2026-10-30", usd: 179.21 }, { f: "2026-11-02", usd: 178.98 }, { f: "2026-11-03", usd: 177 }, { f: "2026-11-05", usd: 178.98 }, { f: "2026-11-12", usd: 179.50 }, { f: "2026-11-13", usd: 175.50 }, { f: "2026-11-16", usd: 176.01 }, { f: "2026-11-17", usd: 174.01 }, { f: "2026-11-18", usd: 174.78 } ],
-    anio_anterior_usd: 185.37,
-    anio_anterior_fecha: "2025-11-18",
+    historico: [ { f: "2026-10-20", usd: 184.04 }, { f: "2026-10-21", usd: 183.17 }, { f: "2026-10-22", usd: 183.02 }, { f: "2026-10-23", usd: 183 }, { f: "2026-10-26", usd: 183.42 }, { f: "2026-10-27", usd: 183.45 }, { f: "2026-10-29", usd: 180 }, { f: "2026-10-30", usd: 179.21 }, { f: "2026-11-02", usd: 178.98 }, { f: "2026-11-03", usd: 177 }, { f: "2026-11-05", usd: 178.98 }, { f: "2026-11-12", usd: 179.50 }, { f: "2026-11-13", usd: 175.50 }, { f: "2026-11-16", usd: 176.01 }, { f: "2026-11-17", usd: 174.01 }, { f: "2026-11-18", usd: 174.78 }, { f: "2026-11-19", usd: 174.81 } ],
+    anio_anterior_usd: 184.31,
+    anio_anterior_fecha: "2025-11-19",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 18-nov-2026",
+    contado_fuente: "CAC-BCR, pizarra 19-nov-2026",
     futuros: [
-      { posicion: "nov-26", usd: 178 }, { posicion: "dic-26", usd: 183.6 }, { posicion: "ene-27", usd: 185.5 },
-      { posicion: "feb-27", usd: 187 }, { posicion: "mar-27", usd: 184 }, { posicion: "abr-27", usd: 185.5 },
-      { posicion: "jul-27", usd: 186.5 }, { posicion: "sep-27", usd: 191 }, { posicion: "dic-27", usd: 195 },
+      { posicion: "nov-26", usd: 179 }, { posicion: "dic-26", usd: 182.2 }, { posicion: "ene-27", usd: 184 },
+      { posicion: "feb-27", usd: 187 }, { posicion: "mar-27", usd: 185 }, { posicion: "abr-27", usd: 185.9 },
+      { posicion: "jul-27", usd: 187 }, { posicion: "sep-27", usd: 191 }, { posicion: "dic-27", usd: 195 },
     ],
     ref_nueva: "abr-27",
     forwards: [
-      { posicion: "dic-26", usd: 180 }, { posicion: "ene-27", usd: 183 }, { posicion: "feb-27", usd: 183 },
-      { posicion: "mar-27", usd: 180 }, { posicion: "abr-27", usd: 180 }, { posicion: "may-27", usd: 180 },
-      { posicion: "jun-27", usd: 180 }, { posicion: "jul-27", usd: 178 },
+      { posicion: "dic-26", usd: 178 }, { posicion: "ene-27", usd: 183 }, { posicion: "feb-27", usd: 178 },
+      { posicion: "mar-27", usd: 179 }, { posicion: "abr-27", usd: 179 }, { posicion: "may-27", usd: 179 },
+      { posicion: "jun-27", usd: 178 }, { posicion: "jul-27", usd: 176 },
     ],
     futuros_hist: {
-      "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 }, { f: "2026-10-20", usd: 194.5 }, { f: "2026-10-22", usd: 193.4 }, { f: "2026-10-23", usd: 193.2 }, { f: "2026-11-05", usd: 187 }, { f: "2026-11-11", usd: 188.3 }, { f: "2026-11-16", usd: 189.1 }, { f: "2026-11-18", usd: 185.5 } ],
-      "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 }, { f: "2026-10-20", usd: 191.5 }, { f: "2026-10-22", usd: 190.5 }, { f: "2026-10-23", usd: 190.5 }, { f: "2026-11-05", usd: 186.9 }, { f: "2026-11-11", usd: 188.5 }, { f: "2026-11-16", usd: 189.4 }, { f: "2026-11-18", usd: 186.5 } ],
-      "sep-27": [ { f: "2026-10-05", usd: 202 }, { f: "2026-10-07", usd: 204.1 }, { f: "2026-10-13", usd: 199 }, { f: "2026-10-14", usd: 199 }, { f: "2026-10-16", usd: 198 }, { f: "2026-10-20", usd: 195.6 }, { f: "2026-10-22", usd: 194.5 }, { f: "2026-10-23", usd: 194.5 }, { f: "2026-11-05", usd: 191.1 }, { f: "2026-11-11", usd: 192.9 }, { f: "2026-11-16", usd: 194 }, { f: "2026-11-18", usd: 191 } ],
+      "abr-27": [ { f: "2026-10-05", usd: 201.9 }, { f: "2026-10-07", usd: 203.1 }, { f: "2026-10-13", usd: 198 }, { f: "2026-10-14", usd: 198 }, { f: "2026-10-16", usd: 196.4 }, { f: "2026-10-20", usd: 194.5 }, { f: "2026-10-22", usd: 193.4 }, { f: "2026-10-23", usd: 193.2 }, { f: "2026-11-05", usd: 187 }, { f: "2026-11-11", usd: 188.3 }, { f: "2026-11-16", usd: 189.1 }, { f: "2026-11-18", usd: 185.5 }, { f: "2026-11-20", usd: 185.9 } ],
+      "jul-27": [ { f: "2026-10-05", usd: 198.3 }, { f: "2026-10-07", usd: 200.2 }, { f: "2026-10-13", usd: 195 }, { f: "2026-10-14", usd: 194.9 }, { f: "2026-10-16", usd: 193.5 }, { f: "2026-10-20", usd: 191.5 }, { f: "2026-10-22", usd: 190.5 }, { f: "2026-10-23", usd: 190.5 }, { f: "2026-11-05", usd: 186.9 }, { f: "2026-11-11", usd: 188.5 }, { f: "2026-11-16", usd: 189.4 }, { f: "2026-11-18", usd: 186.5 }, { f: "2026-11-20", usd: 187 } ],
+      "sep-27": [ { f: "2026-10-05", usd: 202 }, { f: "2026-10-07", usd: 204.1 }, { f: "2026-10-13", usd: 199 }, { f: "2026-10-14", usd: 199 }, { f: "2026-10-16", usd: 198 }, { f: "2026-10-20", usd: 195.6 }, { f: "2026-10-22", usd: 194.5 }, { f: "2026-10-23", usd: 194.5 }, { f: "2026-11-05", usd: 191.1 }, { f: "2026-11-11", usd: 192.9 }, { f: "2026-11-16", usd: 194 }, { f: "2026-11-18", usd: 191 }, { f: "2026-11-20", usd: 191 } ],
     },
     evento_proximo: WASDE,
   },
   trigo: {
     nombre: "Trigo",
     estimativo: false,
-    historico: [ { f: "2026-10-19", usd: 233.98 }, { f: "2026-10-20", usd: 226.98 }, { f: "2026-10-21", usd: 217.07 }, { f: "2026-10-22", usd: 215.01 }, { f: "2026-10-23", usd: 215 }, { f: "2026-10-26", usd: 212.79 }, { f: "2026-10-27", usd: 211.25 }, { f: "2026-10-29", usd: 203.27 }, { f: "2026-10-30", usd: 204.92 }, { f: "2026-11-02", usd: 205 }, { f: "2026-11-03", usd: 204.93 }, { f: "2026-11-05", usd: 206.00 }, { f: "2026-11-12", usd: 188.02 }, { f: "2026-11-13", usd: 185.08 }, { f: "2026-11-16", usd: 185.00 }, { f: "2026-11-17", usd: 185.00 }, { f: "2026-11-18", usd: 185.00 } ],
-    anio_anterior_usd: 180.39,
-    anio_anterior_fecha: "2025-11-18",
+    historico: [ { f: "2026-10-20", usd: 226.98 }, { f: "2026-10-21", usd: 217.07 }, { f: "2026-10-22", usd: 215.01 }, { f: "2026-10-23", usd: 215 }, { f: "2026-10-26", usd: 212.79 }, { f: "2026-10-27", usd: 211.25 }, { f: "2026-10-29", usd: 203.27 }, { f: "2026-10-30", usd: 204.92 }, { f: "2026-11-02", usd: 205 }, { f: "2026-11-03", usd: 204.93 }, { f: "2026-11-05", usd: 206.00 }, { f: "2026-11-12", usd: 188.02 }, { f: "2026-11-13", usd: 185.08 }, { f: "2026-11-16", usd: 185.00 }, { f: "2026-11-17", usd: 185.00 }, { f: "2026-11-18", usd: 185.00 }, { f: "2026-11-19", usd: 189.00 } ],
+    anio_anterior_usd: 174.33,
+    anio_anterior_fecha: "2025-11-19",
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 18-nov-2026",
+    contado_fuente: "CAC-BCR, pizarra 19-nov-2026",
     futuros: [
-      { posicion: "nov-26", usd: 191 }, { posicion: "dic-26", usd: 195.9 }, { posicion: "ene-27", usd: 206.1 },
-      { posicion: "mar-27", usd: 213 }, { posicion: "jul-27", usd: 217 },
+      { posicion: "nov-26", usd: 192 }, { posicion: "dic-26", usd: 196.5 }, { posicion: "ene-27", usd: 206.5 },
+      { posicion: "mar-27", usd: 213.2 }, { posicion: "jul-27", usd: 219.1 },
     ],
     ref_nueva: "ene-27",
     forwards: [
@@ -778,26 +778,26 @@ const MERCADO = {
       { posicion: "mar-27", usd: 200 },
     ],
     futuros_hist: {
-      "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 }, { f: "2026-10-20", usd: 226 }, { f: "2026-10-22", usd: 217.8 }, { f: "2026-10-23", usd: 216.2 }, { f: "2026-11-05", usd: 209 }, { f: "2026-11-11", usd: 203 }, { f: "2026-11-16", usd: 192 }, { f: "2026-11-18", usd: 195.9 } ],
-      "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 }, { f: "2026-10-20", usd: 231.5 }, { f: "2026-10-22", usd: 223.2 }, { f: "2026-10-23", usd: 222.8 }, { f: "2026-11-05", usd: 215.5 }, { f: "2026-11-11", usd: 211.5 }, { f: "2026-11-16", usd: 201.3 }, { f: "2026-11-18", usd: 206.1 } ],
+      "dic-26": [ { f: "2026-10-05", usd: 226.6 }, { f: "2026-10-07", usd: 226.5 }, { f: "2026-10-08", usd: 227 }, { f: "2026-10-13", usd: 228.2 }, { f: "2026-10-14", usd: 230 }, { f: "2026-10-16", usd: 230.2 }, { f: "2026-10-20", usd: 226 }, { f: "2026-10-22", usd: 217.8 }, { f: "2026-10-23", usd: 216.2 }, { f: "2026-11-05", usd: 209 }, { f: "2026-11-11", usd: 203 }, { f: "2026-11-16", usd: 192 }, { f: "2026-11-18", usd: 195.9 }, { f: "2026-11-20", usd: 196.5 } ],
+      "ene-27": [ { f: "2026-10-05", usd: 231.1 }, { f: "2026-10-07", usd: 231.6 }, { f: "2026-10-08", usd: 232 }, { f: "2026-10-13", usd: 233.2 }, { f: "2026-10-14", usd: 235 }, { f: "2026-10-16", usd: 235.1 }, { f: "2026-10-20", usd: 231.5 }, { f: "2026-10-22", usd: 223.2 }, { f: "2026-10-23", usd: 222.8 }, { f: "2026-11-05", usd: 215.5 }, { f: "2026-11-11", usd: 211.5 }, { f: "2026-11-16", usd: 201.3 }, { f: "2026-11-18", usd: 206.1 }, { f: "2026-11-20", usd: 206.5 } ],
     },
     evento_proximo: "",
   },
   girasol: {
     nombre: "Girasol",
     estimativo: true,
-    historico: [ { f: "2026-10-19", usd: 530 }, { f: "2026-10-20", usd: 530 }, { f: "2026-10-21", usd: 530 }, { f: "2026-10-22", usd: 530.02 }, { f: "2026-10-23", usd: 530 }, { f: "2026-10-26", usd: 530 }, { f: "2026-10-27", usd: 530 }, { f: "2026-10-29", usd: 530 }, { f: "2026-10-30", usd: 530 }, { f: "2026-11-02", usd: 520.01 }, { f: "2026-11-03", usd: 515 }, { f: "2026-11-05", usd: 505 }, { f: "2026-11-12", usd: 490.00 }, { f: "2026-11-13", usd: 488.76 }, { f: "2026-11-16", usd: 486.38 }, { f: "2026-11-17", usd: 480.23 }, { f: "2026-11-18", usd: 480.00 } ],
+    historico: [ { f: "2026-10-20", usd: 530 }, { f: "2026-10-21", usd: 530 }, { f: "2026-10-22", usd: 530.02 }, { f: "2026-10-23", usd: 530 }, { f: "2026-10-26", usd: 530 }, { f: "2026-10-27", usd: 530 }, { f: "2026-10-29", usd: 530 }, { f: "2026-10-30", usd: 530 }, { f: "2026-11-02", usd: 520.01 }, { f: "2026-11-03", usd: 515 }, { f: "2026-11-05", usd: 505 }, { f: "2026-11-12", usd: 490.00 }, { f: "2026-11-13", usd: 488.76 }, { f: "2026-11-16", usd: 486.38 }, { f: "2026-11-17", usd: 480.23 }, { f: "2026-11-18", usd: 480.00 }, { f: "2026-11-19", usd: 480.00 } ],
     anio_anterior_usd: null,
     anio_anterior_fecha: null,
     anio_anterior_nota: "",
-    contado_fuente: "CAC-BCR, pizarra 18-nov-2026",
+    contado_fuente: "CAC-BCR, pizarra 19-nov-2026",
     futuros: [],    // A3 tiene contrato de girasol pero casi sin operaciones: sin ajuste útil
     ref_nueva: null,
     forwards: [
-      { posicion: "dic-26", usd: 450 }, { posicion: "ene-27", usd: 450 }, { posicion: "feb-27", usd: 450 },
-      { posicion: "mar-27", usd: 450 }, { posicion: "abr-27", usd: 450 }, { posicion: "may-27", usd: 450 },
+      { posicion: "dic-26", usd: 460 }, { posicion: "ene-27", usd: 460 }, { posicion: "feb-27", usd: 460 },
+      { posicion: "mar-27", usd: 460 }, { posicion: "abr-27", usd: 460 }, { posicion: "may-27", usd: 460 },
     ],
-    forwards_nota: "alto oleico dic–feb: US$ 470/t",
+    forwards_nota: "alto oleico dic–feb: US$ 480/t",
     evento_proximo: "",
   },
 };
@@ -814,7 +814,7 @@ const OTROS_PUERTOS = {
     girasol: { bahia: null, quequen: null },
   },
 };
-const TC_BNA = 1550.50;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
+const TC_BNA = 1556.00;   // dólar BNA comprador que usa la pizarra CAC del día (para pasar el flete de $ a US$)
 
 /* Capacidad de pago de la exportación: FOB oficial (Secretaría de Agricultura,
    www.magyp.gob.ar/mercadosagropecuarios/precios.php) menos retenciones.
@@ -832,48 +832,46 @@ const DEX = { soja: 24, maiz: 8.5, trigo: 5.5, girasol: 4.5 };
    "Fábrica · lugar" o "Molino · lugar"), calidad ("" si no hay), moneda: "usd" | "ars", precio }.
    Un grano sin ofertas ese día queda []. */
 const COMPRADORES = {
-  fecha: "2026-11-18",
-  fuente: "Bolsa de Comercio de Rosario, boletín diario del 18-nov-2026",
+  fecha: "2026-11-20",
+  fuente: "Bolsa de Comercio de Rosario, boletín diario del 20-nov-2026",
   ofertas: {
     soja: [
-      { entrega: "Disponible", quien: "Fábrica · San Lorenzo", calidad: "sustentable", moneda: "ars", precio: 555000 },
-      { entrega: "Disponible hasta el 23-nov", quien: "Fábrica · San Lorenzo", calidad: "con certificación ambiental (EPA/EUDR)", moneda: "ars", precio: 555000 },
-      { entrega: "Disponible", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "ars", precio: 550000 },
-      { entrega: "Disponible", quien: "Fábrica · Gral. Lagos", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
-      { entrega: "Contractual", quien: "Fábrica · Gral. Lagos", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
-      { entrega: "Fijaciones", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "ars", precio: 555000 },
-      { entrega: "Diciembre 2026", quien: "Fábrica · San Lorenzo", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 555000 },
-      { entrega: "Diciembre 2026", quien: "Fábrica · Timbúes", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 550000 },
-      { entrega: "Enero 2027", quien: "Fábrica · San Martín y Timbúes", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 545000 },
+      { entrega: "Disponible", quien: "Fábrica · San Lorenzo", calidad: "sustentable", moneda: "ars", precio: 565000 },
+      { entrega: "Disponible hasta el 25-nov", quien: "Fábrica · San Lorenzo", calidad: "con certificación ambiental (EPA/EUDR)", moneda: "ars", precio: 565000 },
+      { entrega: "Disponible", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "ars", precio: 560000 },
+      { entrega: "Contractual", quien: "Fábrica · Gral. Lagos", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 560000 },
+      { entrega: "Fijaciones", quien: "Fábrica · San Lorenzo y Rosario", calidad: "", moneda: "ars", precio: 565000 },
+      { entrega: "Diciembre 2026", quien: "Fábrica · San Lorenzo", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 565000 },
+      { entrega: "Diciembre 2026", quien: "Fábrica · Rosario", calidad: "", moneda: "ars", precio: 560000 },
+      { entrega: "15-dic a 15-ene", quien: "Fábrica · Timbúes", calidad: "con certificación Visec/2BSvs NUTs", moneda: "usd", precio: 357 },
+      { entrega: "Enero 2027", quien: "Fábrica · San Martín", calidad: "con certificación ambiental (EUDR)", moneda: "ars", precio: 560000 },
     ],
     maiz: [
-      { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 173 },
-      { entrega: "Noviembre 2026", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 173 },
-      { entrega: "Diciembre 2026", quien: "Exportación · Punta Alvear", calidad: "grado 2", moneda: "usd", precio: 180 },
-      { entrega: "Diciembre 2026", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 177 },
-      { entrega: "Enero 2027", quien: "Exportación · Timbúes", calidad: "grado 2", moneda: "usd", precio: 182 },
-      { entrega: "Enero y febrero 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 183 },
-      { entrega: "1-ene a 15-feb 2027", quien: "Exportación · Punta Alvear", calidad: "grado 2", moneda: "usd", precio: 182 },
-      { entrega: "Marzo a junio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 180 },
-      { entrega: "Julio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 178 },
+      { entrega: "Disponible", quien: "Exportación · Timbúes", calidad: "grado 2", moneda: "usd", precio: 175 },
+      { entrega: "Disponible", quien: "Exportación · Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 172 },
+      { entrega: "Diciembre 2026", quien: "Exportación · Timbúes", calidad: "grado 2", moneda: "usd", precio: 178 },
+      { entrega: "Diciembre 2026", quien: "Exportación · Gral. Lagos y Punta Alvear", calidad: "grado 2", moneda: "usd", precio: 175 },
+      { entrega: "Enero 2027", quien: "Exportación · Timbúes", calidad: "grado 2", moneda: "usd", precio: 183 },
+      { entrega: "Enero y febrero 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 178 },
+      { entrega: "Marzo a mayo 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 179 },
+      { entrega: "Junio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 178 },
+      { entrega: "Julio 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2", moneda: "usd", precio: 176 },
     ],
     trigo: [
       { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "proteína mín. 11%", moneda: "usd", precio: 216 },
       { entrega: "Disponible", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "proteína mín. 10,5%", moneda: "usd", precio: 211 },
       { entrega: "Disponible", quien: "Exportación · Timbúes, Gral. Lagos y San Lorenzo", calidad: "proteína mín. 10%", moneda: "usd", precio: 205 },
-      { entrega: "Disponible", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "condición cámara", moneda: "usd", precio: 185 },
+      { entrega: "Disponible", quien: "Exportación · San Martín, Timbúes, Gral. Lagos y San Lorenzo", calidad: "condición cámara o grado 2", moneda: "usd", precio: 185 },
       { entrega: "Noviembre y diciembre 2026", quien: "Exportación · Timbúes, Gral. Lagos y San Lorenzo", calidad: "grado 2, no OGM o condición cámara", moneda: "usd", precio: 185 },
-      { entrega: "Enero 2027", quien: "Exportación · Timbúes, Gral. Lagos, San Martín y San Lorenzo", calidad: "grado 2, no OGM o condición cámara", moneda: "usd", precio: 195 },
+      { entrega: "Enero 2027", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2, no OGM", moneda: "usd", precio: 200 },
+      { entrega: "Enero 2027", quien: "Exportación · San Martín y San Lorenzo", calidad: "condición cámara", moneda: "usd", precio: 195 },
       { entrega: "Febrero 2027", quien: "Exportación · San Martín", calidad: "condición cámara", moneda: "usd", precio: 198 },
-      { entrega: "Febrero 2027", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2, no OGM", moneda: "usd", precio: 197 },
-      { entrega: "Marzo 2027", quien: "Exportación · San Martín, Timbúes y Gral. Lagos", calidad: "grado 2 o condición cámara", moneda: "usd", precio: 200 },
+      { entrega: "Febrero y marzo 2027", quien: "Exportación · Timbúes y Gral. Lagos", calidad: "grado 2, no OGM", moneda: "usd", precio: 205 },
     ],
     girasol: [
-      { entrega: "15-dic a 15-ene", quien: "Fábrica · Timbúes", calidad: "", moneda: "usd", precio: 450 },
-      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "", moneda: "usd", precio: 450 },
-      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "alto oleico", moneda: "usd", precio: 470 },
-      { entrega: "Diciembre 2026 a mayo 2027", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "usd", precio: 450 },
-      { entrega: "Enero y febrero 2027", quien: "Fábrica · Timbúes", calidad: "", moneda: "usd", precio: 450 },
+      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "", moneda: "usd", precio: 460 },
+      { entrega: "Diciembre 2026 a febrero 2027", quien: "Fábrica · Gran Rosario", calidad: "alto oleico", moneda: "usd", precio: 480 },
+      { entrega: "Diciembre 2026 a mayo 2027", quien: "Fábrica · San Lorenzo", calidad: "", moneda: "usd", precio: 460 },
     ],
   },
 };
@@ -881,21 +879,21 @@ const COMPRADORES = {
 /* Lo que mueve el mercado: resumen semanal de hechos del mundo (máx. 5 líneas cortas).
    Cada línea: bandera, texto de una oración y fuente con fecha. Solo hechos con cifra y fuente. */
 const MUNDO = {
-  fecha: "2026-11-13",
+  fecha: "2026-11-23",
   items: [
-    { pais: "🇺🇸", texto: "El WASDE de noviembre bajó las existencias finales de soja de EE.UU. a 8,16 Mt (el mercado esperaba 9,01 Mt) porque va a exportar más, y la soja subió unos US$ 14,7/t en Chicago.", fuente: "USDA (WASDE) vía Agrositio, 11-nov" },
-    { pais: "🇨🇳", texto: "China volvió a comprar soja americana, pero apenas 136.000 t, mientras EE.UU. despachó 2,53 Mt en una semana, lo más alto de la campaña.", fuente: "USDA vía Agrositio, 9-nov" },
-    { pais: "🇧🇷", texto: "Brasil cosecharía 5,73 Mt de trigo, 27% menos que el año pasado, y tendría que importar unas 7,5 Mt, un récord.", fuente: "Conab y USDA vía BCR y Agrositio, 6-nov" },
-    { pais: "🇦🇷", texto: "Siembra: el girasol va 72,4% de 3,1 Mha (7 puntos adelantado), el maíz 50,5% y la soja 4,7%; del trigo se cosechó 8,5% y se proyectan 23,4 Mt.", fuente: "Bolsa de Cereales de Bs. As. vía Agrositio, 5-nov" },
-    { pais: "🇦🇷", texto: "Maíz: Argentina exportó más de 3,9 Mt en octubre y Brasil 12,5% menos que el año pasado, pero acá quedan 14,4 Mt sin vender, el máximo de la serie.", fuente: "NABSA, ANEC y BCR vía Agrositio, 6-nov" },
+    { pais: "🇺🇸", texto: "EE.UU. ya levantó el 96% de la soja y el 88% del maíz; el USDA le recortó 3,6 Mt a la cosecha de maíz (403,7 Mt) y deja las existencias de soja en 8,2 Mt, las más bajas en cuatro campañas.", fuente: "USDA vía Agrositio, 20-nov" },
+    { pais: "🇨🇳", texto: "La soja americana en viaje a China para los próximos 30 días bajó de 6 a 4,7 Mt en dos semanas, sin anuncios nuevos de compra.", fuente: "datos de embarques vía Agrositio, 20-nov" },
+    { pais: "🇧🇷", texto: "Brasil ya sembró el 75% de 49,3 Mha de soja (el promedio es 71%) y apunta a 181,6 Mt; de trigo cosecharía 5,3 Mt, un tercio menos, y tendría que importar 8,9 Mt.", fuente: "Conab vía Agrositio, 20-nov" },
+    { pais: "🇦🇷", texto: "Siembra adelantada: la soja de primera va 30,4% (16 puntos sobre el promedio), el maíz 51,5% y el girasol 92,1%, con 99% de la soja en buena humedad.", fuente: "Bolsa de Cereales de Bs. As. vía Agrositio, 19-nov" },
+    { pais: "🇦🇷", texto: "Trigo: ya se cosechó el 16,7% con 23,9 qq/ha de promedio y se esperan 23,4 Mt; en la zona núcleo los primeros lotes rinden cerca de 60 qq/ha.", fuente: "Bolsa de Cereales de Bs. As. y BCR vía Agrositio, 19-nov" },
   ],
   /* Lectura de esas noticias para cada cultivo (la usa el motor cuando la mercadería
      está en el campo). dir: "bajista" | "alcista" | "neutral". porque: una oración corta. */
   sesgo: {
-    soja:  { dir: "neutral", porque: "el USDA recortó las existencias de EE.UU. y la soja rebotó en Chicago, pero China sigue comprando poco" },
-    maiz:  { dir: "neutral", porque: "la exportación argentina viene fuerte y Brasil despacha menos, pero acá queda un récord de maíz sin vender" },
-    trigo: { dir: "alcista", porque: "Brasil pierde un cuarto de su cosecha y va a tener que importar más, y el trigo argentino es el que tiene más a mano" },
-    girasol: { dir: "neutral", porque: "la siembra viene adelantada pero esta semana no hubo datos nuevos de precio ni de demanda para el girasol" },
+    soja:  { dir: "bajista", porque: "Brasil y Argentina siembran adelantados y con buena humedad, y los envíos de EE.UU. a China se enfrían, aunque el USDA ve stocks americanos ajustados" },
+    maiz:  { dir: "neutral", porque: "el USDA achicó la cosecha de EE.UU., pero la siembra argentina ya pasó la mitad sin problemas" },
+    trigo: { dir: "neutral", porque: "Brasil va a tener que importar casi 9 Mt, pero la cosecha argentina de 23,4 Mt ya está entrando con buenos rindes" },
+    girasol: { dir: "neutral", porque: "la siembra está casi terminada y esta semana no hubo datos nuevos de precio ni de demanda para el girasol" },
   },
 };
 
